@@ -1,4 +1,4 @@
-package com.callisto.quoter;
+package com.callisto.quoter.logic;
 
 import com.callisto.quoterv2.R;
 
