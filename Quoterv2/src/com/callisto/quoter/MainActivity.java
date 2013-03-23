@@ -1,4 +1,6 @@
-package com.callisto.quoterv2;
+package com.callisto.quoter;
+
+import com.callisto.quoterv2.R;
 
 import android.os.Bundle;
 import android.app.Activity;
