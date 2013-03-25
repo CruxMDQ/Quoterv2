@@ -6,25 +6,26 @@ import android.util.Log;
 public class TablePropMats
 {
 	public static final String 
+		TABLE_PROPERTY_MATERIALS = "Propiedades_mats_detalles",
 		COLUMN_WALLS = "Muros",
 		COLUMN_ROOFS = "Techos",
 		COLUMN_OPENINGS = "Aberturas",
 		COLUMN_ENCLOSURES = "Cerramientos",
-		COLUMN_GAS = "Gas",
-		COLUMN_POWER = "Electricidad",
 		COLUMN_WATER = "Agua",
+		COLUMN_POWER = "Electricidad",
+		COLUMN_GAS = "Gas",
 		COLUMN_SEWER = "Cloacas",
-		TABLE_PROPERTY_MATERIALS = "Propiedades_construccion_detalles",
-		DATABASE_CREATE = "create table" + TABLE_PROPERTY_MATERIALS + "("
+		DATABASE_CREATE = "create table " + TABLE_PROPERTY_MATERIALS + "("
 			  + TableProperties.COLUMN_ID_PROPERTY + " integer primary key, " 
-			  + COLUMN_WALLS + " text,"
-			  + COLUMN_ROOFS + " text,"
-			  + COLUMN_OPENINGS + " text,"
-			  + COLUMN_ENCLOSURES + " text,"
-			  + COLUMN_WATER + " text,"
-			  + COLUMN_POWER + " text,"
-			  + COLUMN_GAS + " text,"
-			  + "FOREIGN KEY(" + TableProperties.COLUMN_ID_PROPERTY + ") REFERENCES " + TableProperties.TABLE_PROPERTIES + "(" + TableProperties.COLUMN_ID_PROPERTY + ")"
+			  + COLUMN_WALLS + " text, "
+			  + COLUMN_ROOFS + " text, "
+			  + COLUMN_OPENINGS + " text, "
+			  + COLUMN_ENCLOSURES + " text, "
+			  + COLUMN_WATER + " text, "
+			  + COLUMN_POWER + " text, "
+			  + COLUMN_GAS + " text, "
+			  + COLUMN_SEWER + " text, "
+			  + "FOREIGN KEY" + "(" + TableProperties.COLUMN_ID_PROPERTY + ")" + "REFERENCES " + TableProperties.TABLE_PROPERTIES + "(" + TableProperties.COLUMN_ID_PROPERTY + ")"
 			  + ");";
 
 	public static void onCreate(SQLiteDatabase db)

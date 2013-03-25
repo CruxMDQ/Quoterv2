@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class QuoterDBHelper extends SQLiteOpenHelper
 {
 	public static final String
-		TRIGGER_PROPERTY_EXPENSES = "CREATE TRIGGER IF NOT EXISTS propiedades_gastos_fecha AFTER INSERT ON Propiedades_gastos"
+		TRIGGER_PROPERTY_EXPENSES = "CREATE TRIGGER IF NOT EXISTS propiedades_gastos_fecha AFTER INSERT ON Propiedades_gastos "
 			+ "BEGIN "
 			+ "UPDATE Propiedades_gastos "
 			+ "SET Fecha = DATETIME('NOW') WHERE rowid = new.rowid; "

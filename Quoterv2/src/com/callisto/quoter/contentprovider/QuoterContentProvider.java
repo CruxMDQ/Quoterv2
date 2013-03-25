@@ -143,7 +143,6 @@ public class QuoterContentProvider extends ContentProvider
 		sURIMatcher.addURI(AUTHORITY, PATH_PROP_TYPES + "/#", PROP_TYPES_ID);
 		sURIMatcher.addURI(AUTHORITY, PATH_PROP_VALUES, PROP_VALUES);
 		sURIMatcher.addURI(AUTHORITY, PATH_PROP_VALUES + "/#", PROP_VALUES_ID);
-
 	}
 	
 	@Override
@@ -160,8 +159,6 @@ public class QuoterContentProvider extends ContentProvider
 		SQLiteQueryBuilder queryBuilder = new SQLiteQueryBuilder();
 		
 //		checkColumns(projection);
-		
-//		queryBuilder.setTables(TodoTable.TABLE_TODO);
 		
 		int uriType = sURIMatcher.match(uri);
 		
@@ -595,9 +592,126 @@ public class QuoterContentProvider extends ContentProvider
 	public int update(Uri uri, ContentValues values, String selection,
 			String[] selectionArgs)
 	{
-		// TODO Auto-generated method stub
-		return 0;
+		int uriType = sURIMatcher.match(uri);
+		SQLiteDatabase sqlDB = database.getWritableDatabase();
+		
+		int rowsUpdated = 0;
+
+		switch(uriType)
+		{
+		case CITIES:
+			rowsUpdated = sqlDB.update(TableCities.TABLE_CITIES, values, selection, selectionArgs);
+			break;
+			
+		case CITIES_ID:
+			rowsUpdated = updateOnCaseWithId(
+					TableCities.TABLE_CITIES,
+					TableCities.COLUMN_ID_CITY,
+					selection, sqlDB, values, uri);
+			
+			break;
+			
+		case COMFORTS:
+			rowsUpdated = sqlDB.update(TableComforts.TABLE_COMFORTS, values, selection, selectionArgs);
+			break;
+			
+		case COMFORTS_ID:
+			rowsUpdated = updateOnCaseWithId(
+					TableComforts.TABLE_COMFORTS,
+					TableComforts.COLUMN_ID_COMFORT,
+					selection, sqlDB, values, uri);
+			
+			break;
+			
+		case EXPENSES:
+			rowsUpdated = sqlDB.update(TableExpenses.TABLE_EXPENSES, values, selection, selectionArgs);
+			break;
+			
+		case EXPENSES_ID:
+			rowsUpdated = updateOnCaseWithId(
+					TableExpenses.TABLE_EXPENSES,
+					TableExpenses.COLUMN_ID_EXPENSE,
+					selection, sqlDB, values, uri);
+			
+			break;
+			
+		case NBH:
+			rowsUpdated = sqlDB.update(TableNbh.TABLE_NBH, values, selection, selectionArgs);
+			break;
+			
+		case NBH_ID:
+			rowsUpdated = updateOnCaseWithId(
+					TableNbh.TABLE_NBH,
+					TableNbh.COLUMN_ID_NBH,
+					selection, sqlDB, values, uri);
+			
+			break;
+			
+		case PROPERTIES:
+			rowsUpdated = sqlDB.update(TableProperties.TABLE_PROPERTIES, values, selection, selectionArgs);
+			break;
+			
+		case PROPERTIES_ID:
+			rowsUpdated = updateOnCaseWithId(
+					TableProperties.TABLE_PROPERTIES,
+					TableProperties.COLUMN_ID_PROPERTY,
+					selection, sqlDB, values, uri);
+			
+			break;
+			
+		case ROOMS:
+			rowsUpdated = sqlDB.update(TableRooms.TABLE_ROOMS, values, selection, selectionArgs);
+			break;
+			
+		case ROOMS_ID:
+			rowsUpdated = updateOnCaseWithId(
+					TableRooms.TABLE_ROOMS,
+					TableRooms.COLUMN_ID_ROOM,
+					selection, sqlDB, values, uri);
+			
+			break;
+		
+		case ROOM_TYPES:
+			rowsUpdated = sqlDB.update(TableRoomTypes.TABLE_ROOMTYPES, values, selection, selectionArgs);
+			break;
+			
+		case ROOM_TYPES_ID:
+			rowsUpdated = updateOnCaseWithId(
+					TableRoomTypes.TABLE_ROOMTYPES,
+					TableRoomTypes.COLUMN_ID_ROOM_TYPE,
+					selection, sqlDB, values, uri);
+			
+			break;
+
+		default:
+			throw new IllegalArgumentException("Unknown URI: " + uri);
+		}
+		
+		getContext().getContentResolver().notifyChange(uri, null);
+		return rowsUpdated;
 	}
 
-			
+	private int updateOnCaseWithId(String table, String key, String selection, SQLiteDatabase db, ContentValues values, Uri uri)
+	{
+		int rowsUpdated = 0;
+		
+		String id = uri.getLastPathSegment();
+		
+		if (TextUtils.isEmpty(selection))
+		{
+			rowsUpdated = db.update(table,
+					values,
+					key + "=" + id, 
+					null);
+		}
+		else
+		{
+			rowsUpdated = db.update(table, 
+					values,
+					key + "=" + id + " and " + selection, 
+					null);
+		}
+
+		return rowsUpdated;
+	}		
 }
