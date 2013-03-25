@@ -6,24 +6,23 @@ import android.app.TabActivity;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.database.CursorWrapper;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TabHost;
 
+import com.callisto.quoter.R;
 import com.callisto.quoter.contentprovider.QuoterContentProvider;
 import com.callisto.quoter.database.TableRoomTypes;
-import com.callisto.quoter.R;
 
 @SuppressWarnings("deprecation")
 public class QuoterDetailActivity extends TabActivity
@@ -33,10 +32,10 @@ public class QuoterDetailActivity extends TabActivity
 
 	private Spinner mSpinnerType;
 	
-	private Intent mNewTabIntent;
+//	private Intent mNewTabIntent;
 	
-	private ArrayAdapter<String> mSpinnerDataAdapter;
-	private String[] mTypes;
+//	private ArrayAdapter<String> mSpinnerDataAdapter;
+//	private String[] mTypes;
 	
 	private Uri quoteUri;
 
@@ -109,13 +108,14 @@ public class QuoterDetailActivity extends TabActivity
 
 	private void populateSpinner()
 	{
-		String[] from = new String[] { TableRoomTypes.COLUMN_NAME };
+		String[] from = new String[] { "_id", TableRoomTypes.COLUMN_NAME };
 		
-		int[] to = new int[] { R.id.spinnerType };
+		int[] to = new int[] { android.R.id.text1 };
 		
-		getLoaderManager().initLoader(0, null, this);
+		mAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_dropdown_item, 
+				null, from, to, 0);
 		
-		mAdapter = new SimpleCursorAdapter(this, R.layout.quoter_detail, null, from, to, 0);
+		mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
 		mSpinnerType.setAdapter(mAdapter);
 	}
@@ -147,8 +147,7 @@ public class QuoterDetailActivity extends TabActivity
 	
 					}
 				}
-			).show();
-			
+			).show();			
 	}
 	
 	private String[] toStringArray(Object[] objectArray)  
@@ -170,15 +169,6 @@ public class QuoterDetailActivity extends TabActivity
 	    values.put(TableRoomTypes.COLUMN_NAME, wrapper.getName());
 	    
     	quoteUri = getContentResolver().insert(QuoterContentProvider.CONTENT_URI_ROOM_TYPES, values);
-
-//	    if (quoteUri == null)
-//	    {
-//	    	quoteUri = getContentResolver().insert(QuoterContentProvider.CONTENT_URI_ROOM_TYPES, values);
-//	    }
-//	    else
-//	    {
-//	    	getContentResolver().update(quoteUri, values, null, null);
-//	    }
 				
 		populateSpinner();
 	}
@@ -197,7 +187,9 @@ public class QuoterDetailActivity extends TabActivity
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data)
 	{
-		mAdapter.swapCursor(data);
+		MaskingWrapper mask = new MaskingWrapper(data);
+		
+		mAdapter.swapCursor(mask);
 	}
 	
 	@Override
@@ -234,4 +226,76 @@ public class QuoterDetailActivity extends TabActivity
 		}
 	}
 
+	// CursorWrapper subclass built to dodge the '_id' requirement for SimpleCursorAdapter
+	// (ref.: http://stackoverflow.com/questions/7796345/column-id-does-not-exist-simplecursoradapter-revisited/7796404#7796404)
+	class MaskingWrapper extends CursorWrapper
+	{
+		Cursor maskedCursor;
+		
+		public MaskingWrapper(Cursor cursor)
+		{
+			super(cursor);
+			maskedCursor = cursor;
+		}
+		
+		@Override
+		public int getColumnCount(){
+			return super.getColumnCount() + 1;
+		}
+		
+		@Override
+		public int getColumnIndex(String columnName)
+		{
+			if (columnName == "_id")
+				return 0;
+			else
+				return super.getColumnIndex(columnName);
+		}
+
+		@Override
+		public int getColumnIndexOrThrow(String columnName)
+		{
+			if (columnName == "_id")
+				return 0;
+			else
+				return super.getColumnIndexOrThrow(columnName);
+		}
+
+		@Override
+		public double getDouble(int columnIndex)
+		{
+			if (columnIndex == 0)
+				return (double)super.getPosition();
+			else
+				return super.getDouble(columnIndex);
+		}
+		
+		@Override
+		public float getFloat(int columnIndex)
+		{
+			if (columnIndex == 0)
+				return (float)super.getPosition();
+			else
+				return super.getFloat(columnIndex);
+		}
+		
+		@Override
+		public int getType(int columnIndex)
+		{
+			if (columnIndex == 0)
+				return Cursor.FIELD_TYPE_INTEGER;
+			else
+				return super.getType(columnIndex);
+		}
+		
+		@Override
+		public boolean isNull(int columnIndex)
+		{
+			if (columnIndex == 0)
+				return super.isNull(1);
+			else
+				return super.isNull(columnIndex);
+		}
+		
+	}
 }
