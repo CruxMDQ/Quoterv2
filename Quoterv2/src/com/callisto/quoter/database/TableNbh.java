@@ -17,6 +17,11 @@ public class TableNbh
 			+ " text not null"
 			+ ");";
 	
+	public static final String DATABASE_SELECT = 
+			"SELECT " + COLUMN_ID_NBH + " AS _id, "
+			+ COLUMN_NAME 
+			+ " FROM " + TABLE_NBH + ";";
+	
 	public static void onCreate(SQLiteDatabase db)
 	{
 		db.execSQL(DATABASE_CREATE);

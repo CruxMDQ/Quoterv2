@@ -28,6 +28,18 @@ public class TablePropMats
 			  + "FOREIGN KEY" + "(" + TableProperties.COLUMN_ID_PROPERTY + ")" + "REFERENCES " + TableProperties.TABLE_PROPERTIES + "(" + TableProperties.COLUMN_ID_PROPERTY + ")"
 			  + ");";
 
+	public static final String DATABASE_SELECT = 
+			"SELECT " + TableProperties.COLUMN_ID_PROPERTY + " AS _id, "
+			+ COLUMN_WALLS + ", "
+			+ COLUMN_ROOFS + ", "
+			+ COLUMN_OPENINGS + ", "
+			+ COLUMN_ENCLOSURES + ", "
+			+ COLUMN_WATER + ", "
+			+ COLUMN_POWER + ", "
+			+ COLUMN_GAS + ", "
+			+ COLUMN_SEWER 
+			+ " FROM " + TABLE_PROPERTY_MATERIALS + ";";
+
 	public static void onCreate(SQLiteDatabase db)
 	{
 		db.execSQL(DATABASE_CREATE);

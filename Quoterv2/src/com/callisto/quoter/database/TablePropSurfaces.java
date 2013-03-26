@@ -20,6 +20,14 @@ public class TablePropSurfaces
 				+ "FOREIGN KEY(" + TableProperties.COLUMN_ID_PROPERTY + ") REFERENCES " + TableProperties.TABLE_PROPERTIES + "(" + TableProperties.COLUMN_ID_PROPERTY + ")"
 				+ ");";
 	
+	public static final String DATABASE_SELECT = 
+			"SELECT " + TableProperties.COLUMN_ID_PROPERTY + " AS _id, "
+			+ COLUMN_SURFACE_BUILT + ", "
+			+ COLUMN_SURFACE_COVERED + ", "
+			+ COLUMN_SURFACE_SEMICOVERED + ", "
+			+ COLUMN_SURFACE_NOT_BUILT + ", "
+			+ " FROM " + TABLE_PROPERTY_SURFACES + ";";
+
 	public static void onCreate(SQLiteDatabase db)
 	{
 		db.execSQL(DATABASE_CREATE);

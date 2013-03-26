@@ -27,6 +27,16 @@ public class TableProperties
 			+ "FOREIGN KEY(" + TablePropTypes.COLUMN_ID_PROPERTY_TYPE + ") REFERENCES " + TablePropTypes.TABLE_PROPERTY_TYPES + "(" + TablePropTypes.COLUMN_ID_PROPERTY_TYPE + ")"
 			+ ");";
 
+	public static final String DATABASE_SELECT = 
+			"SELECT " + TableProperties.COLUMN_ID_PROPERTY + " AS _id, "
+			+ TablePropTypes.COLUMN_ID_PROPERTY_TYPE + ", "
+			+ TableCities.COLUMN_ID_CITY + ", "
+			+ TableNbh.COLUMN_ID_NBH + ", "
+			+ COLUMN_OWNER_URI + ", "
+			+ COLUMN_ADDRESS + ", "
+			+ COLUMN_DESCRIPTION + ", "
+			+ COLUMN_PICTURE 
+			+ " FROM " + TABLE_PROPERTIES + ";";
 	
 	public static void onCreate(SQLiteDatabase db)
 	{

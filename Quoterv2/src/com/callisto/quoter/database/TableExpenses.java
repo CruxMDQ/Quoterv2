@@ -8,12 +8,16 @@ public class TableExpenses
 	public static final String 
 		TABLE_EXPENSES = "Gastos",
 		COLUMN_ID_EXPENSE = "_id_gasto",
-		COLUMN_NAME = "Nombre",
-		DATABASE_CREATE = "create table " + TABLE_EXPENSES + "("
+		COLUMN_NAME = "Nombre";
+	
+	public static final String DATABASE_CREATE = "create table " + TABLE_EXPENSES + "("
 				+ COLUMN_ID_EXPENSE + " integer primary key autoincrement,"
 				+ COLUMN_NAME + " text not null"
 				+ ");";
 
+	public static final String DATABASE_SELECT = "SELECT " + COLUMN_ID_EXPENSE + " AS _id, "
+			+ COLUMN_NAME + " FROM " + TABLE_EXPENSES + ";";
+	
 	public static void onCreate(SQLiteDatabase db)
 	{
 		db.execSQL(DATABASE_CREATE);

@@ -20,7 +20,15 @@ public class TablePropExpenses
 				+ "FOREIGN KEY(" + TableProperties.COLUMN_ID_PROPERTY + ") REFERENCES " + TableProperties.TABLE_PROPERTIES + "(" + TableProperties.COLUMN_ID_PROPERTY + "), "
 				+ "FOREIGN KEY(" + TableExpenses.COLUMN_ID_EXPENSE + ") REFERENCES " + TableExpenses.TABLE_EXPENSES + "(" + TableExpenses.COLUMN_ID_EXPENSE + ")"
 				+ ");";
-	
+
+	public static final String DATABASE_SELECT = 
+			"SELECT " + TableProperties.COLUMN_ID_PROPERTY + " AS _id, "
+			+ TablePropTypes.COLUMN_ID_PROPERTY_TYPE + ", "
+			+ TableExpenses.COLUMN_ID_EXPENSE + ", "
+			+ COLUMN_AMOUNT + ", "
+			+ COLUMN_DATE
+			+ " FROM " + TABLE_PROPERTY_EXPENSES + ";";
+
 	public static void onCreate(SQLiteDatabase db)
 	{
 		db.execSQL(DATABASE_CREATE);

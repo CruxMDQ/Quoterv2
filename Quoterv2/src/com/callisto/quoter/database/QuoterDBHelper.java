@@ -1,6 +1,7 @@
 package com.callisto.quoter.database;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
@@ -13,7 +14,7 @@ public class QuoterDBHelper extends SQLiteOpenHelper
 			+ "SET Fecha = DATETIME('NOW') WHERE rowid = new.rowid; "
 			+ "END;";
 
-	private static final String DATABASE_NAME = "todotable.db";
+	private static final String DATABASE_NAME = "Quoter.db";
 	private static final int DATABASE_VERSION = 1;
 	
 	public QuoterDBHelper(Context context)
@@ -65,5 +66,65 @@ public class QuoterDBHelper extends SQLiteOpenHelper
 		TableRoomTypes.onUpgrade(db, oldVersion, newVersion);
 	}
 
+	public Cursor getCursor(int TableID)
+	{
+		SQLiteDatabase db = getWritableDatabase();
 
+		switch (TableID)
+		{
+		case 0:
+			return db.rawQuery(TableCities.DATABASE_SELECT, null);
+			
+		case 1:
+			return db.rawQuery(TableComforts.DATABASE_SELECT, null);
+
+		case 2:
+			return db.rawQuery(TableExpenses.DATABASE_SELECT, null);
+		
+		case 3:
+			return db.rawQuery(TableNbh.DATABASE_SELECT, null);
+
+		case 4:
+			return db.rawQuery(TableProperties.DATABASE_SELECT, null);
+			
+		case 5:
+			return db.rawQuery(TablePropComforts.DATABASE_SELECT, null);
+			
+		case 6:
+			return db.rawQuery(TablePropExpenses.DATABASE_SELECT, null);
+
+		case 7:
+			return db.rawQuery(TablePropLogistics.DATABASE_SELECT, null);
+			
+		case 8:
+			return db.rawQuery(TablePropMats.DATABASE_SELECT, null);
+			
+		case 9:
+			return db.rawQuery(TablePropNom.DATABASE_SELECT, null);
+		
+		case 10:
+			return db.rawQuery(TablePropRooms.DATABASE_SELECT, null);
+			
+		case 11:
+			return db.rawQuery(TablePropSurfaces.DATABASE_SELECT, null);
+		
+		case 12:
+			return db.rawQuery(TablePropTaxes.DATABASE_SELECT, null);
+			
+		case 13:
+			return db.rawQuery(TablePropTypes.DATABASE_SELECT, null);
+			
+		case 14:
+			return db.rawQuery(TablePropValues.DATABASE_SELECT, null);
+			
+		case 15:
+			return db.rawQuery(TableRooms.DATABASE_SELECT, null);
+			
+		case 16:
+			return db.rawQuery(TableRoomTypes.DATABASE_SELECT, null);
+			
+		default:
+			return null;
+		}
+	}
 }

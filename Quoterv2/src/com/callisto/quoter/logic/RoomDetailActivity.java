@@ -22,20 +22,20 @@ import android.widget.TabHost;
 
 import com.callisto.quoter.R;
 import com.callisto.quoter.contentprovider.QuoterContentProvider;
+import com.callisto.quoter.database.QuoterDBHelper;
 import com.callisto.quoter.database.TableRoomTypes;
 
 @SuppressWarnings("deprecation")
-public class QuoterDetailActivity extends TabActivity
+public class RoomDetailActivity extends TabActivity
 	implements LoaderManager.LoaderCallbacks<Cursor>
 {
+	private final int TABLE_ROOMTYPES = 16;
+	
 	private TabHost tabHost = null;
 
 	private Spinner mSpinnerType;
 	
 //	private Intent mNewTabIntent;
-	
-//	private ArrayAdapter<String> mSpinnerDataAdapter;
-//	private String[] mTypes;
 	
 	private Uri quoteUri;
 
@@ -44,8 +44,8 @@ public class QuoterDetailActivity extends TabActivity
 	private static final int
 		ADD_ID = Menu.FIRST + 1,
 		DELETE_ID = Menu.FIRST + 3,					
-		ADD_TAB = Menu.FIRST + 11,
-		DELETE_TAB = Menu.FIRST + 12;
+		ADD_TAB = Menu.FIRST + 11;
+//		DELETE_TAB = Menu.FIRST + 12;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -108,12 +108,14 @@ public class QuoterDetailActivity extends TabActivity
 
 	private void populateSpinner()
 	{
-		String[] from = new String[] { "_id", TableRoomTypes.COLUMN_NAME };
+		String[] from = new String[] { TableRoomTypes.COLUMN_NAME };
 		
 		int[] to = new int[] { android.R.id.text1 };
+
+		QuoterDBHelper DAO = new QuoterDBHelper(getApplicationContext());
 		
 		mAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_dropdown_item, 
-				null, from, to, 0);
+				DAO.getCursor(TABLE_ROOMTYPES), from, to, 0);
 		
 		mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
@@ -150,18 +152,6 @@ public class QuoterDetailActivity extends TabActivity
 			).show();			
 	}
 	
-	private String[] toStringArray(Object[] objectArray)  
-	{  
-		String[] stringArray = new String[objectArray.length];  
-		
-		for (int i = 0; i < objectArray.length; i++)  
-		{  
-			stringArray[i] = objectArray[i].toString();  
-		}
-		
-		return stringArray;
-	}
-
 	private void processAddType(AddTypeDialogWrapper wrapper) 
 	{
 	    ContentValues values = new ContentValues();

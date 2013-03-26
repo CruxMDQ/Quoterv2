@@ -8,11 +8,16 @@ public class TableComforts
 	public static final String 
 		TABLE_COMFORTS = "Comodidades",
 		COLUMN_NAME = "Nombre",
-		COLUMN_ID_COMFORT = "_id_comfort",
-		DATABASE_CREATE = "create table " + TABLE_COMFORTS + "("
+		COLUMN_ID_COMFORT = "_id_comfort";
+	
+	public static final String DATABASE_CREATE = "create table " + TABLE_COMFORTS + "("
 				+ COLUMN_ID_COMFORT + " integer primary key autoincrement,"
 				+ COLUMN_NAME + " text not null"
 				+ ");";
+	
+	public static final String DATABASE_SELECT = "SELECT " + COLUMN_ID_COMFORT + " AS _id, "
+			+ COLUMN_NAME + " FROM " + TABLE_COMFORTS + ";";
+	
 	
 	public static void onCreate(SQLiteDatabase db)
 	{

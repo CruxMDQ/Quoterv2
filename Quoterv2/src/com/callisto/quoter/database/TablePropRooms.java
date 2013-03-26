@@ -14,6 +14,11 @@ public class TablePropRooms
 			+ " FOREIGN KEY" + "(" + TableRooms.COLUMN_ID_ROOM + ")" + " REFERENCES " + TableRooms.TABLE_ROOMS + "(" + TableRooms.COLUMN_ID_ROOM + ")"
 			+ ");";
 
+	public static final String DATABASE_SELECT = 
+			"SELECT " + TableProperties.COLUMN_ID_PROPERTY + " AS _id, "
+			+ TableRooms.COLUMN_ID_ROOM + ", "
+			+ " FROM " + TABLE_PROPERTY_ROOMS + ";";
+	
 	public static void onCreate(SQLiteDatabase db)
 	{
 		db.execSQL(DATABASE_CREATE);

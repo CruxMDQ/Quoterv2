@@ -24,6 +24,16 @@ public class TableRooms
 				+ "FOREIGN KEY" + "(" + TableRoomTypes.COLUMN_ID_ROOM_TYPE + ")" + " REFERENCES " + TableRoomTypes.TABLE_ROOMTYPES + "(" + TableRoomTypes.COLUMN_ID_ROOM_TYPE + ")"
 				+ ");";
 	
+	public static final String DATABASE_SELECT = 
+			"SELECT " + COLUMN_ID_ROOM + " AS _id, "
+			+ TableRoomTypes.COLUMN_ID_ROOM_TYPE + ", " 
+			+ COLUMN_ROOM_WIDTH_X + ", "
+			+ COLUMN_ROOM_WIDTH_Y + ", "
+			+ COLUMN_FLOORS + ", "
+			+ COLUMN_DETAILS + ", "
+			+ COLUMN_PICTURE 
+			+ " FROM " + TABLE_ROOMS + ";";
+
 	public static void onCreate(SQLiteDatabase db)
 	{
 		db.execSQL(DATABASE_CREATE);

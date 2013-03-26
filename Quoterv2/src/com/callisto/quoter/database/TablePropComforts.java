@@ -13,7 +13,12 @@ public class TablePropComforts
 				+ "FOREIGN KEY(" + TableProperties.COLUMN_ID_PROPERTY + ") REFERENCES " + TableProperties.TABLE_PROPERTIES + "(" + TableProperties.COLUMN_ID_PROPERTY + "),"
 				+ "FOREIGN KEY(" + TableComforts.COLUMN_ID_COMFORT + ") REFERENCES " + TableComforts.TABLE_COMFORTS + "(" + TableComforts.COLUMN_ID_COMFORT + ")"
 				+ ");";
-		
+
+	public static final String DATABASE_SELECT = 
+			"SELECT " + TableProperties.COLUMN_ID_PROPERTY + " AS _id, "
+			+ TableComforts.COLUMN_ID_COMFORT 
+			+ " FROM " + TABLE_PROPERTY_COMFORTS + ";";
+	
 	public static void onCreate(SQLiteDatabase db)
 	{
 		db.execSQL(DATABASE_CREATE);

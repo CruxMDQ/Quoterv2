@@ -14,6 +14,11 @@ public class TableRoomTypes
 			+ COLUMN_NAME + " text not null"
 			+ ");";
 	
+	public static final String DATABASE_SELECT = 
+			"SELECT " + COLUMN_ID_ROOM_TYPE + " AS _id, "
+			+ COLUMN_NAME 
+			+ " FROM " + TABLE_ROOMTYPES + ";";
+	
 	public static void onCreate(SQLiteDatabase db)
 	{
 		db.execSQL(DATABASE_CREATE);

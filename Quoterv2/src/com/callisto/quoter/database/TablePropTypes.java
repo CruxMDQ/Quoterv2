@@ -17,6 +17,11 @@ public class TablePropTypes
 			+ " text not null"
 			+ ");";
 	
+	public static final String DATABASE_SELECT = 
+			"SELECT " + COLUMN_ID_PROPERTY_TYPE + " AS _id, "
+			+ COLUMN_NAME 
+			+ " FROM " + TABLE_PROPERTY_TYPES + ";";
+	
 	public static void onCreate(SQLiteDatabase db)
 	{
 		db.execSQL(DATABASE_CREATE);

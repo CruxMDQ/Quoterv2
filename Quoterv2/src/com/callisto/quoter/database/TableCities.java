@@ -17,6 +17,11 @@ public class TableCities
 			+ " text not null"
 			+ ");";
 	
+	public static final String DATABASE_SELECT = 
+			"SELECT " + COLUMN_ID_CITY + " AS _id, "
+			+ COLUMN_NAME 
+			+ " FROM " + TABLE_CITIES + ";";
+	
 	public static void onCreate(SQLiteDatabase db)
 	{
 		db.execSQL(DATABASE_CREATE);
