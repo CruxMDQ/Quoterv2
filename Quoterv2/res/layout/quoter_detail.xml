@@ -7,12 +7,14 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_height="fill_parent"
+        android:padding="5dp">
         
         <TabWidget
             android:id="@android:id/tabs"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:tag="tabPane"
             />
         
         <FrameLayout
@@ -24,15 +26,6 @@
                 android:id="@+id/dashboard"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
-
-	            <Button
-	                android:id="@+id/btnAddTab"
-	                android:layout_width="wrap_content"
-	                android:layout_height="wrap_content"
-	                android:layout_alignParentBottom="true"
-	                android:layout_alignParentRight="true"
-	                android:onClick="addTab"
-	                android:text="Add room" />
 
 	            <TextView
 	                android:id="@+id/lblType"
@@ -111,6 +104,26 @@
 	                android:layout_alignParentRight="true"
 	                android:layout_toRightOf="@+id/lblFloors"
 	                android:ems="10" />
+            
+			    <RelativeLayout
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:layout_alignParentBottom="true"
+					android:layout_below="@+id/txtFloors"
+					android:layout_centerInParent="true"
+					android:layout_marginTop="10dp"
+					android:gravity="bottom" 
+					>
+					
+					<ImageView
+						android:id="@+id/imgDisplayImage"
+						android:layout_width="match_parent"
+						android:layout_height="match_parent"
+						android:layout_below="@+id/txtFloors"
+						android:layout_centerInParent="true"
+						android:contentDescription="@string/image_will_be_shown_here" 
+						/>    
+				</RelativeLayout>
             
             </RelativeLayout>
             

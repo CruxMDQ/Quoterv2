@@ -1,21 +1,31 @@
 package com.callisto.quoter.logic;
 
+import java.io.File;
+
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
 import android.app.TabActivity;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.provider.MediaStore.Images.Media;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TabHost;
@@ -25,27 +35,30 @@ import com.callisto.quoter.contentprovider.QuoterContentProvider;
 import com.callisto.quoter.database.QuoterDBHelper;
 import com.callisto.quoter.database.TableRoomTypes;
 
-@SuppressWarnings("deprecation")
-public class RoomDetailActivity extends TabActivity
+//@SuppressWarnings("deprecation")
+public class RoomDetailActivity extends Activity
 	implements LoaderManager.LoaderCallbacks<Cursor>
 {
 	private final int TABLE_ROOMTYPES = 16;
 	
-	private TabHost tabHost = null;
+//	private TabHost tabHost = null;
 
-	private Spinner mSpinnerType;
+	private Spinner daSpinnerType;
 	
-//	private Intent mNewTabIntent;
-	
+	// "Dis 'ere gubbinz are fer da kamera to do work propa."
+	private ImageView daImageView;
+	private Uri daURI;
+	private String daPhotoPath;
+
 	private Uri quoteUri;
 
-	private SimpleCursorAdapter mAdapter;
+	private SimpleCursorAdapter daAdapter;
 
 	private static final int
+		PICK_IMAGE = 0,
 		ADD_ID = Menu.FIRST + 1,
-		DELETE_ID = Menu.FIRST + 3,					
-		ADD_TAB = Menu.FIRST + 11;
-//		DELETE_TAB = Menu.FIRST + 12;
+		DELETE_ID = Menu.FIRST + 3;					
+//		ADD_TAB = Menu.FIRST + 11;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -53,11 +66,34 @@ public class RoomDetailActivity extends TabActivity
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.quoter_detail);
 		
-		this.tabHost = getTabHost();
+//		this.tabHost = getTabHost();
 		
-		mSpinnerType = (Spinner) findViewById(R.id.spinnerType);
+		daSpinnerType = (Spinner) findViewById(R.id.spinnerType);
 		
 		populateSpinner();
+		
+		daImageView = (ImageView) findViewById(R.id.imgDisplayImage);
+		
+		daImageView.setOnClickListener(new View.OnClickListener()
+		{			
+			@Override
+			public void onClick(View v)
+			{
+				Intent camera = new Intent();
+				
+				camera.setAction(MediaStore.ACTION_IMAGE_CAPTURE);
+				
+				camera.putExtra("crop", "true");
+				
+				//File f = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+				
+				daURI = Uri.fromFile(new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "myFile.jpg"));
+				
+				camera.putExtra(MediaStore.EXTRA_OUTPUT, daURI);
+				
+				startActivityForResult(camera, PICK_IMAGE);
+			}
+		});
 	}
 
 	@Override
@@ -66,9 +102,6 @@ public class RoomDetailActivity extends TabActivity
 		menu.add(Menu.NONE, ADD_ID, Menu.NONE, "New room type")
 			.setIcon(R.drawable.add)
 			.setAlphabeticShortcut('t');
-		menu.add(Menu.NONE, ADD_TAB, Menu.NONE, "New room")
-			.setIcon(R.drawable.add)
-			.setAlphabeticShortcut('a');
 
 		return (super.onCreateOptionsMenu(menu));
 	}
@@ -80,24 +113,92 @@ public class RoomDetailActivity extends TabActivity
 		{
 		case ADD_ID:
 			addRoomType();
+			return (true);
 			
 		case DELETE_ID:
 			deleteRoomType();
-			
-		case ADD_TAB:
-			addTab();
-			
 			return (true);
 		}
 		
 		return (super.onOptionsItemSelected(item));
 	}
 
-
-	private void addTab()
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		// TODO Auto-generated method stub
-		
+		if (resultCode == Activity.RESULT_OK)
+		{
+			if (requestCode == PICK_IMAGE)
+			{
+				Cursor cursor = getContentResolver().query(
+						Media.EXTERNAL_CONTENT_URI, new String[]
+								{
+									Media.DATA, 
+									Media.DATE_ADDED, 
+									MediaStore.Images.ImageColumns.ORIENTATION
+								}, 
+								Media.DATE_ADDED, 
+								null, 
+								"date_added ASC"
+				);
+				
+				if (cursor != null && cursor.moveToFirst())
+				{
+					do
+					{
+						daURI = Uri.parse(cursor.getString(cursor.getColumnIndex(Media.DATA)));
+						daPhotoPath = daURI.toString();
+					}
+					while (cursor.moveToNext());
+					cursor.close();
+				}
+				if (data != null)
+				{
+					if (data.hasExtra("data"))
+					{
+						Bitmap thumbnail = (Bitmap) data.getExtras().get("data");
+						
+						daImageView.setImageBitmap(thumbnail);
+					}
+					else
+					{
+						System.out.println("Intent bundle does not have the 'data' Extra");
+						
+						int width = daImageView.getWidth();
+						int height = daImageView.getHeight();
+						
+						BitmapFactory.Options factoryOptions = new BitmapFactory.Options();
+						
+						factoryOptions.inJustDecodeBounds = true;
+						
+						BitmapFactory.decodeFile(/*mURI.getPath()*/ daPhotoPath, factoryOptions);
+						
+						int imageWidth = factoryOptions.outWidth;
+						int imageHeight = factoryOptions.outHeight;
+						
+						// Determine how much to scale down the image
+						int scaleFactor = Math.min(
+								imageWidth/width,
+								imageHeight/height
+								);
+						
+						// Decode the image file into a Bitmap sized to fill view
+						
+						factoryOptions.inJustDecodeBounds = false;
+						factoryOptions.inSampleSize = scaleFactor;
+						factoryOptions.inPurgeable = true;
+						
+						Bitmap bitmap = BitmapFactory.decodeFile(/*mURI.getPath()*/ daPhotoPath, factoryOptions);
+						
+						daImageView.setImageBitmap(bitmap);
+					}
+				}
+			}
+		}
+		else 
+		{
+			System.out.println("Picture taking activity NOT returning RESULT_OK");
+		}
 	}
 
 	private void deleteRoomType()
@@ -114,12 +215,12 @@ public class RoomDetailActivity extends TabActivity
 
 		QuoterDBHelper DAO = new QuoterDBHelper(getApplicationContext());
 		
-		mAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_dropdown_item, 
+		daAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_dropdown_item, 
 				DAO.getCursor(TABLE_ROOMTYPES), from, to, 0);
 		
-		mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		daAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
-		mSpinnerType.setAdapter(mAdapter);
+		daSpinnerType.setAdapter(daAdapter);
 	}
 	
 	private void addRoomType()
@@ -179,14 +280,14 @@ public class RoomDetailActivity extends TabActivity
 	{
 		MaskingWrapper mask = new MaskingWrapper(data);
 		
-		mAdapter.swapCursor(mask);
+		daAdapter.swapCursor(mask);
 	}
 	
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader)
 	{
 		// Data not available anymore -> delete reference
-		mAdapter.swapCursor(null);
+		daAdapter.swapCursor(null);
 	}
 
 	class AddTypeDialogWrapper
