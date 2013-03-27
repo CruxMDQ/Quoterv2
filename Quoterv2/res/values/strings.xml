@@ -5,6 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Settings</string>
+	<string name="menu_delete">Delete property</string>
     <string name="add_type_title">Create new room type</string>
     <string name="cancel">Cancel</string>
     <string name="ok">OK</string>
@@ -14,5 +15,11 @@
     <string name="dimension_2">Dimension 2:</string>
     <string name="floors">Floors:</string>
     <string name="image_will_be_shown_here">Image will be shown here</string>
+    <string name="no_properties">No properties</string>
+    <string name="prop_type">Property type</string>
+    <string name="owner">Owner...</string>
+    <string name="values">Values...</string>
+    <string name="logistics">Logistics...</string>
+    <string name="materials">Materials...</string>
     
 </resources>

@@ -65,6 +65,7 @@
 
 	            <EditText
 	                android:id="@+id/txtWidthX"
+	                android:inputType="numberDecimal"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:layout_alignBaseline="@+id/lblWidthX"
@@ -78,6 +79,7 @@
 
 	            <EditText
 	                android:id="@+id/txtWidthY"
+	                android:inputType="numberDecimal"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:layout_alignBaseline="@+id/lblWidthY"
@@ -93,7 +95,7 @@
 	                android:layout_alignLeft="@+id/lblWidthY"
 	                android:layout_below="@+id/txtWidthY"
 	                android:layout_marginTop="30dp"
-	                android:text="TextView" />
+	                android:text="@string/floors" />
 
 	            <EditText
 	                android:id="@+id/txtFloors"

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/dashboard"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+    
+    <RelativeLayout
+        android:id="@+id/Type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+	        android:id="@+id/lblType"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentTop="true"
+	        android:layout_marginLeft="20dp"
+	        android:layout_marginTop="30dp"
+	        android:text="@string/prop_type" />
+	
+	    <Spinner
+			android:id="@+id/spinnerType"
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:layout_alignBottom="@+id/lblType"
+			android:layout_marginLeft="20dp"
+			android:layout_toRightOf="@+id/lblType" />
+	
+	</RelativeLayout>
+
+	<TableLayout
+	    android:id="@+id/gridButtons"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/Type" 
+	   	>
+	    
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal">
+
+	        <Button
+		        android:id="@+id/btnOwner"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1" 
+		        android:text="@string/owner"/>
+		    
+		    <Button
+		        android:id="@+id/btnValues"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1" 
+		        android:text="@string/values"/>
+		
+		</LinearLayout>   
+
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal">
+
+	        <Button
+		        android:id="@+id/btnLogistics"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1" 
+		        android:text="@string/logistics"/>
+		    
+		    <Button
+		        android:id="@+id/btnMaterials"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1" 
+		        android:text="@string/materials"/>
+		
+		</LinearLayout>   
+    </TableLayout>
+    
+    <RelativeLayout
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:layout_alignParentBottom="true"
+		android:layout_below="@+id/gridButtons"
+		android:layout_centerInParent="true"
+		android:layout_marginTop="10dp" 
+		android:gravity="bottom" >
+		
+		<ImageView
+			android:id="@+id/imgDisplayImage"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:layout_centerInParent="true"
+			android:contentDescription="@string/image_will_be_shown_here" 
+			/> 
+			   
+	</RelativeLayout>
+	
+</RelativeLayout>    

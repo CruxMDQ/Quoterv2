@@ -64,7 +64,7 @@ public class RoomDetailActivity extends Activity
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.quoter_detail);
+		setContentView(R.layout.room_detail);
 		
 //		this.tabHost = getTabHost();
 		
