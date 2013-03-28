@@ -41,7 +41,7 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:orientation="horizontal">
-
+	
 	        <Button
 		        android:id="@+id/btnOwner"
 		        android:layout_width="0dp"
@@ -49,13 +49,27 @@
 		        android:layout_weight="1" 
 		        android:text="@string/owner"/>
 		    
-		    <Button
-		        android:id="@+id/btnValues"
+		    <TextView
+		        android:id="@+id/txtOwner"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="2" 
+		        android:hint="Pick owner"/>
+		
+		</LinearLayout>   
+	    
+   	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal">
+
+	        <Button
+		        android:id="@+id/btnRooms"
 		        android:layout_width="0dp"
 		        android:layout_height="wrap_content"
 		        android:layout_weight="1" 
-		        android:text="@string/values"/>
-		
+		        android:text="Rooms..."/>
+		    
 		</LinearLayout>   
 
 	    <LinearLayout
@@ -76,6 +90,26 @@
 		        android:layout_height="wrap_content"
 		        android:layout_weight="1" 
 		        android:text="@string/materials"/>
+		
+		</LinearLayout>   
+	    <LinearLayout
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal">
+
+		    <Button
+		        android:id="@+id/btnValues"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1" 
+		        android:text="@string/values"/>
+		
+			<Button
+		        android:id="@+id/btnLocation"
+		        android:layout_width="0dp"
+		        android:layout_height="wrap_content"
+		        android:layout_weight="1" 
+		        android:text="Location..."/>
 		
 		</LinearLayout>   
     </TableLayout>
