@@ -5,7 +5,6 @@ import java.io.File;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.LoaderManager;
-import android.app.TabActivity;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
@@ -28,14 +27,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
-import android.widget.TabHost;
 
 import com.callisto.quoter.R;
 import com.callisto.quoter.contentprovider.QuoterContentProvider;
 import com.callisto.quoter.database.QuoterDBHelper;
 import com.callisto.quoter.database.TableRoomTypes;
 
-//@SuppressWarnings("deprecation")
 public class RoomDetailActivity extends Activity
 	implements LoaderManager.LoaderCallbacks<Cursor>
 {
@@ -50,7 +47,7 @@ public class RoomDetailActivity extends Activity
 	private Uri daURI;
 	private String daPhotoPath;
 
-	private Uri quoteUri;
+//	private Uri quoteUri;
 
 	private SimpleCursorAdapter daAdapter;
 
@@ -259,7 +256,7 @@ public class RoomDetailActivity extends Activity
 	    
 	    values.put(TableRoomTypes.COLUMN_NAME, wrapper.getName());
 	    
-    	quoteUri = getContentResolver().insert(QuoterContentProvider.CONTENT_URI_ROOM_TYPES, values);
+    	/*quoteUri = */ getContentResolver().insert(QuoterContentProvider.CONTENT_URI_ROOM_TYPES, values);
 				
 		populateSpinner();
 	}
