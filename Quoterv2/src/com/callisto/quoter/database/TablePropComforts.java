@@ -7,7 +7,8 @@ public class TablePropComforts
 {
 	public static final String 
 		TABLE_PROPERTY_COMFORTS = "Propiedades_comodidades",
-		DATABASE_CREATE = "create table " + TABLE_PROPERTY_COMFORTS + "("
+		DATABASE_CREATE = "create table if not exists " 
+				+ TABLE_PROPERTY_COMFORTS + "("
 				+ TableProperties.COLUMN_ID_PROPERTY + " integer primary key, "
 				+ TableComforts.COLUMN_ID_COMFORT + " integer not null, "
 				+ "FOREIGN KEY(" + TableProperties.COLUMN_ID_PROPERTY + ") REFERENCES " + TableProperties.TABLE_PROPERTIES + "(" + TableProperties.COLUMN_ID_PROPERTY + "),"

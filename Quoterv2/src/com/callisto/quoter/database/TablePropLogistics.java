@@ -10,7 +10,8 @@ public class TablePropLogistics
 		COLUMN_PLACEMENT = "Ubicacion",
 		COLUMN_FACING = "Orientacion",
 		COLUMN_VIEW = "Vista",
-		DATABASE_CREATE = "create table " + TABLE_PROPERTY_LOGISTICS + "("
+		DATABASE_CREATE = "create table if not exists " 
+				+ TABLE_PROPERTY_LOGISTICS + "("
 				+ TableProperties.COLUMN_ID_PROPERTY + " integer primary key, "
 				+ COLUMN_PLACEMENT + " text,"
 				+ COLUMN_FACING + " text,"

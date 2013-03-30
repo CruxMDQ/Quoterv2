@@ -127,4 +127,32 @@ public class QuoterDBHelper extends SQLiteOpenHelper
 			return null;
 		}
 	}
+	
+	public long getMaxId(int TableID)
+	{
+
+	    long id = 0;     
+		
+		SQLiteDatabase db = getWritableDatabase();
+		
+		Cursor cursor = null;
+		
+		switch(TableID)
+		{
+		case 4:
+			cursor = db.rawQuery(TableProperties.DATABASE_MAX_ID, null);
+		
+		default:
+			id = -1;
+		}
+		
+	    if (cursor.moveToFirst())
+	    {
+	        do
+	        {           
+	            id = cursor.getLong(0);                  
+	        } while(cursor.moveToNext());           
+	    }
+	    return id;
+	}	
 }

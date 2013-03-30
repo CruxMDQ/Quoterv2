@@ -11,7 +11,8 @@ public class TablePropExpenses
 		TABLE_PROPERTY_EXPENSES = "Propiedades_gastos",
 		COLUMN_AMOUNT = "Monto",
 		COLUMN_DATE = "Fecha",
-		DATABASE_CREATE = "create table " + TABLE_PROPERTY_EXPENSES + "("
+		DATABASE_CREATE = "create table if not exists " 
+				+ TABLE_PROPERTY_EXPENSES + "("
 				+ TableProperties.COLUMN_ID_PROPERTY + " integer not null, "
 				+ TableExpenses.COLUMN_ID_EXPENSE + " integer not null, "
 				+ COLUMN_DATE + " datetime, "

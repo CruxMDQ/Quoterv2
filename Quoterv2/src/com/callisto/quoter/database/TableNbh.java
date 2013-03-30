@@ -9,7 +9,7 @@ public class TableNbh
 			COLUMN_ID_NBH = "_id_nbh",
 			COLUMN_NAME = "Nombre";
 	
-	private static final String DATABASE_CREATE = "create table "
+	private static final String DATABASE_CREATE = "create table if not exists "
 			+ TABLE_NBH
 			+ "("
 			+ COLUMN_ID_NBH + " integer primary key autoincrement, "

@@ -13,7 +13,8 @@ public class TablePropNom
 			COLUMN_PARCEL = "Parcela",
 			COLUMN_SUBPARCEL = "Subparcela",
 			COLUMN_POLYGON = "Pol",
-			DATABASE_CREATE = "create table " + TABLE_PROPERTY_NOMENCLATURES + "("
+			DATABASE_CREATE = "create table if not exists " 
+					+ TABLE_PROPERTY_NOMENCLATURES + "("
 					+ TableProperties.COLUMN_ID_PROPERTY + " integer primary key, "
 					+ COLUMN_CIRC + " text,"
 					+ COLUMN_SECT + " text,"

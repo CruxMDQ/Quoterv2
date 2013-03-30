@@ -10,7 +10,8 @@ public class TablePropValues
 			COLUMN_VALUE_PARCEL_SQMT = "Valor_lote_metro",
 			COLUMN_VALUE_BUILT_SQMT = "Valor_edif_metro",
 			COLUMN_VALUE_FINAL = "Valor_final",
-			DATABASE_CREATE = "CREATE TABLE " + TABLE_PROPERTY_VALUES + "("
+			DATABASE_CREATE = "create table if not exists "
+					+ TABLE_PROPERTY_VALUES + "("
 					+ TableProperties.COLUMN_ID_PROPERTY + " integer primary key, "
 					+ COLUMN_VALUE_PARCEL_SQMT + " integer,"
 					+ COLUMN_VALUE_BUILT_SQMT + " integer,"

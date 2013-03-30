@@ -10,7 +10,8 @@ public class TableExpenses
 		COLUMN_ID_EXPENSE = "_id_gasto",
 		COLUMN_NAME = "Nombre";
 	
-	public static final String DATABASE_CREATE = "create table " + TABLE_EXPENSES + "("
+	public static final String DATABASE_CREATE = "create table if not exists "
+				+ TABLE_EXPENSES + "("
 				+ COLUMN_ID_EXPENSE + " integer primary key autoincrement,"
 				+ COLUMN_NAME + " text not null"
 				+ ");";

@@ -9,7 +9,7 @@ public class TableCities
 			COLUMN_ID_CITY = "_id_city",
 			COLUMN_NAME = "Nombre";
 	
-	private static final String DATABASE_CREATE = "create table "
+	private static final String DATABASE_CREATE = "create table if not exists "
 			+ TABLE_CITIES
 			+ "("
 			+ COLUMN_ID_CITY + " integer primary key autoincrement, "

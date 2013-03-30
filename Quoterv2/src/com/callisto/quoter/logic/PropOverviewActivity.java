@@ -3,11 +3,13 @@ package com.callisto.quoter.logic;
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.SimpleCursorAdapter;
@@ -27,7 +29,10 @@ public class PropOverviewActivity extends ListActivity implements
 	private static final int 
 //		ACTIVITY_CREATE = 0,
 //		ACTIVITY_EDIT = 1,
-		DELETE_ID = Menu.FIRST + 1;
+		ADD_ID = Menu.FIRST + 1,
+		UPDATE_ID = Menu.FIRST + 2,
+		DELETE_ID = Menu.FIRST + 3,
+		EMAIL_ID = Menu.FIRST + 4;
 	
 	private SimpleCursorAdapter daAdapter;
 	
@@ -65,6 +70,56 @@ public class PropOverviewActivity extends ListActivity implements
 		
 		menu.add(0, DELETE_ID, 0, R.string.menu_delete);
 	}
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) 
+	{
+		menu.add(Menu.NONE, ADD_ID, Menu.NONE, "New property quote")
+			.setIcon(R.drawable.add)
+			.setAlphabeticShortcut('n');
+	
+		menu.add(Menu.NONE, UPDATE_ID, Menu.NONE, "Update existing quote")
+			.setIcon(R.drawable.add)
+			.setAlphabeticShortcut('u');
+		
+		menu.add(Menu.NONE, DELETE_ID, Menu.NONE, "Delete quote")
+			.setIcon(R.drawable.add)
+			.setAlphabeticShortcut('d');
+		
+		menu.add(Menu.NONE, EMAIL_ID, Menu.NONE, "Email quote")
+			.setIcon(R.drawable.add)
+			.setAlphabeticShortcut('e');
+			
+		return (super.onCreateOptionsMenu(menu));
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item)
+	{
+		switch (item.getItemId())
+		{
+		case ADD_ID:
+			Intent intent = new Intent();
+			
+			intent.setClass(this, PropDetailActivity.class);
+			
+			QuoterDBHelper DAO = new QuoterDBHelper(this);
+
+			intent.putExtra("propId", DAO.getMaxId(4));
+
+			startActivity(intent);
+//			addRoomType();
+			return (true);
+			
+		case DELETE_ID:
+//			deleteRoomType();
+			return (true);
+		}
+		
+		return (super.onOptionsItemSelected(item));
+	}
+
+	
 	
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args)

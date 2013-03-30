@@ -11,7 +11,8 @@ public class TablePropSurfaces
 		COLUMN_SURFACE_COVERED = "Cubierta",
 		COLUMN_SURFACE_SEMICOVERED = "Semicubierta",
 		COLUMN_SURFACE_NOT_BUILT = "Descubierta",
-		DATABASE_CREATE = "create table " + TABLE_PROPERTY_SURFACES + "("
+		DATABASE_CREATE = "create table if not exists "
+				+ TABLE_PROPERTY_SURFACES + "("
 				+ TableProperties.COLUMN_ID_PROPERTY + " integer primary key, "
 				+ COLUMN_SURFACE_BUILT + " text,"
 				+ COLUMN_SURFACE_COVERED + " text,"

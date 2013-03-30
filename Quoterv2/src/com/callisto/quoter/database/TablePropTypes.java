@@ -9,7 +9,7 @@ public class TablePropTypes
 			COLUMN_ID_PROPERTY_TYPE = "_id_tipo_prop",
 			COLUMN_NAME = "Nombre";
 	
-	private static final String DATABASE_CREATE = "create table "
+	private static final String DATABASE_CREATE = "create table if not exists "
 			+ TABLE_PROPERTY_TYPES
 			+ "("
 			+ COLUMN_ID_PROPERTY_TYPE + " integer primary key autoincrement, "

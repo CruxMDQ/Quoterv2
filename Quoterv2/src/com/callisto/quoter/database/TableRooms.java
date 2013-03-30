@@ -13,7 +13,8 @@ public class TableRooms
 		COLUMN_FLOORS = "pisos",
 		COLUMN_DETAILS = "detalles",
 		COLUMN_PICTURE = "Imagen",
-		DATABASE_CREATE = "create table " + TABLE_ROOMS + "(" 
+		DATABASE_CREATE = "create table if not exists " 
+				+ TABLE_ROOMS + "(" 
 				+ COLUMN_ID_ROOM + " integer primary key autoincrement, " 
 				+ TableRoomTypes.COLUMN_ID_ROOM_TYPE + " integer not null," 
 				+ COLUMN_ROOM_WIDTH_X + " real not null,"

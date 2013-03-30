@@ -13,7 +13,8 @@ public class TableProperties
 			COLUMN_ID_PROPERTY = "_id_prop",
 			COLUMN_NAME = "Nombre";
 	
-	private static final String DATABASE_CREATE = "create table " + TABLE_PROPERTIES + "("
+	private static final String DATABASE_CREATE = "create table if not exists "
+			+ TABLE_PROPERTIES + "("
 			+ COLUMN_ID_PROPERTY + " integer primary key autoincrement,"
 			+ TablePropTypes.COLUMN_ID_PROPERTY_TYPE + " integer not null,"
 			+ TableCities.COLUMN_ID_CITY + " integer not null,"
@@ -37,6 +38,9 @@ public class TableProperties
 			+ COLUMN_DESCRIPTION + ", "
 			+ COLUMN_PICTURE 
 			+ " FROM " + TABLE_PROPERTIES + ";";
+
+	public static final String DATABASE_MAX_ID = 
+			"SELECT MAX" + "(" + COLUMN_ID_PROPERTY + ")" + " AS max_id FROM " + TABLE_PROPERTIES;
 	
 	public static void onCreate(SQLiteDatabase db)
 	{

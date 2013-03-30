@@ -15,18 +15,19 @@ public class TablePropMats
 		COLUMN_POWER = "Electricidad",
 		COLUMN_GAS = "Gas",
 		COLUMN_SEWER = "Cloacas",
-		DATABASE_CREATE = "create table " + TABLE_PROPERTY_MATERIALS + "("
-			  + TableProperties.COLUMN_ID_PROPERTY + " integer primary key, " 
-			  + COLUMN_WALLS + " text, "
-			  + COLUMN_ROOFS + " text, "
-			  + COLUMN_OPENINGS + " text, "
-			  + COLUMN_ENCLOSURES + " text, "
-			  + COLUMN_WATER + " text, "
-			  + COLUMN_POWER + " text, "
-			  + COLUMN_GAS + " text, "
-			  + COLUMN_SEWER + " text, "
-			  + "FOREIGN KEY" + "(" + TableProperties.COLUMN_ID_PROPERTY + ")" + "REFERENCES " + TableProperties.TABLE_PROPERTIES + "(" + TableProperties.COLUMN_ID_PROPERTY + ")"
-			  + ");";
+		DATABASE_CREATE = "create table if not exists " 
+				+ TABLE_PROPERTY_MATERIALS + "("
+				+ TableProperties.COLUMN_ID_PROPERTY + " integer primary key, " 
+				+ COLUMN_WALLS + " text, "
+				+ COLUMN_ROOFS + " text, "
+				+ COLUMN_OPENINGS + " text, "
+				+ COLUMN_ENCLOSURES + " text, "
+				+ COLUMN_WATER + " text, "
+				+ COLUMN_POWER + " text, "
+				+ COLUMN_GAS + " text, "
+				+ COLUMN_SEWER + " text, "
+				+ "FOREIGN KEY" + "(" + TableProperties.COLUMN_ID_PROPERTY + ")" + "REFERENCES " + TableProperties.TABLE_PROPERTIES + "(" + TableProperties.COLUMN_ID_PROPERTY + ")"
+				+ ");";
 
 	public static final String DATABASE_SELECT = 
 			"SELECT " + TableProperties.COLUMN_ID_PROPERTY + " AS _id, "

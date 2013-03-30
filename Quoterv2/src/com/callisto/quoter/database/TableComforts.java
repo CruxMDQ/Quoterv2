@@ -10,7 +10,8 @@ public class TableComforts
 		COLUMN_NAME = "Nombre",
 		COLUMN_ID_COMFORT = "_id_comfort";
 	
-	public static final String DATABASE_CREATE = "create table " + TABLE_COMFORTS + "("
+	public static final String DATABASE_CREATE = "create table if not exists " 
+				+ TABLE_COMFORTS + "("
 				+ COLUMN_ID_COMFORT + " integer primary key autoincrement,"
 				+ COLUMN_NAME + " text not null"
 				+ ");";

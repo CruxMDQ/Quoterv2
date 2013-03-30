@@ -10,7 +10,8 @@ public class TablePropTaxes
 			COLUMN_ARBA = "ARBA",
 			COLUMN_MUNICIPAL = "Municipal",
 			COLUMN_MATR = "Matricula",
-			DATABASE_CREATE = "CREATE TABLE " + TABLE_PROPERTY_TAXES + "("
+			DATABASE_CREATE = "create table if not exists "
+					+ TABLE_PROPERTY_TAXES + "("
 					+ TableProperties.COLUMN_ID_PROPERTY + " integer primary key, "
 					+ COLUMN_ARBA + " text,"
 					+ COLUMN_MUNICIPAL + " text,"

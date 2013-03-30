@@ -7,7 +7,8 @@ public class TablePropRooms
 {
 	public static final String
 		TABLE_PROPERTY_ROOMS = "Propiedades_ambientes",
-		DATABASE_CREATE = "create table " + TABLE_PROPERTY_ROOMS + "("
+		DATABASE_CREATE = "create table if not exists "
+			+ TABLE_PROPERTY_ROOMS + "("
 			+ TableProperties.COLUMN_ID_PROPERTY + " integer primary key,"
 			+ TableRooms.COLUMN_ID_ROOM + " integer not null,"
 			+ " FOREIGN KEY" + "(" + TableProperties.COLUMN_ID_PROPERTY + ")" + " REFERENCES " + TableProperties.TABLE_PROPERTIES + "(" + TableProperties.COLUMN_ID_PROPERTY + "),"
