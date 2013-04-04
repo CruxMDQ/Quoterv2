@@ -22,6 +22,8 @@ public class RoomDetailTabhost extends TabActivity
 
 	private int z = 0;
 
+	private long propId;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -29,15 +31,28 @@ public class RoomDetailTabhost extends TabActivity
 		setContentView(R.layout.room_tabhost);
 		
 		this.tabHost = getTabHost();
+
+		Bundle extras = getIntent().getExtras();
+	    
+	    if(extras == null) 
+	    {
+	        propId = 0;
+	    } 
+	    else 
+	    {
+	        propId = extras.getLong("propId");
+	    }
 		
-		Intent newRoom = new Intent();
+		Intent newTab = new Intent();
+
+		newTab.putExtra("propId", this.propId);
 		
-		newRoom.setClass(this, RoomDetailActivity.class);
+		newTab.setClass(this, RoomDetailActivity.class);
 		
 		tabHost.addTab(
 				tabHost.newTabSpec("Main")
 				.setIndicator("New room")
-				.setContent(newRoom)
+				.setContent(newTab)
 				);
 	}
 	
@@ -45,6 +60,8 @@ public class RoomDetailTabhost extends TabActivity
 	{
 		Intent newTab = new Intent();
 		
+		newTab.putExtra("propId", this.propId);
+
 		newTab.setClass(this, RoomDetailActivity.class);
 		
 		tabHost.addTab(

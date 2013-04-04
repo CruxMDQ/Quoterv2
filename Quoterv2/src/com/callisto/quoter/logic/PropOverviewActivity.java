@@ -5,6 +5,7 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ContextMenu;
@@ -12,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 
 import com.callisto.quoter.R;
@@ -118,8 +120,22 @@ public class PropOverviewActivity extends ListActivity implements
 		
 		return (super.onOptionsItemSelected(item));
 	}
-
 	
+	public void onConfigurationChanged(Configuration newConfig)
+	{
+		super.onConfigurationChanged(newConfig);
+		
+		LinearLayout container = (LinearLayout) findViewById(R.id.dashboard);
+		
+		if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE)
+		{
+			container.setOrientation(LinearLayout.HORIZONTAL);
+		}
+		else
+		{
+			container.setOrientation(LinearLayout.VERTICAL);
+		}
+	}
 	
 	@Override
 	public Loader<Cursor> onCreateLoader(int id, Bundle args)

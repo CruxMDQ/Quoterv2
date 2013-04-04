@@ -57,13 +57,24 @@ public class RoomDetailActivity extends Activity
 		DELETE_ID = Menu.FIRST + 3;					
 //		ADD_TAB = Menu.FIRST + 11;
 
+	private long propId;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.room_detail);
 		
-//		this.tabHost = getTabHost();
+		Bundle extras = getIntent().getExtras();
+	    
+	    if(extras == null) 
+	    {
+	        propId = 0;
+	    } 
+	    else 
+	    {
+	        propId = extras.getLong("propId");
+	    }
 		
 		daSpinnerType = (Spinner) findViewById(R.id.spinnerType);
 		
