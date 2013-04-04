@@ -3,10 +3,15 @@ package com.callisto.quoter.logic;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
+import android.location.Criteria;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -24,13 +29,19 @@ import android.widget.LinearLayout;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.callisto.quoter.R;
 import com.callisto.quoter.contentprovider.QuoterContentProvider;
 import com.callisto.quoter.database.QuoterDBHelper;
 import com.callisto.quoter.database.TablePropTypes;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
-public class PropDetailActivity extends Activity
+public class PropDetailActivity extends Activity implements LocationListener
 {
 	static final int PICK_REQUEST = 70003;
 
@@ -49,6 +60,11 @@ public class PropDetailActivity extends Activity
 
 	long propId;
 
+	// "We be needing 'em fer da map to do its job, boss."
+	private LocationManager locationManager;
+    private String provider;
+	private double currentLat, currentLong;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{	
@@ -91,6 +107,8 @@ public class PropDetailActivity extends Activity
 	    {
 	        propId = extras.getLong("propId");
 	    }
+	    
+	    doMapGubbinz();
 	}
 	
 	/***
@@ -216,6 +234,49 @@ public class PropDetailActivity extends Activity
 		}
 	}
 	
+	/* Request updates at startup */
+	@Override
+	protected void onResume() {
+	    super.onResume();
+	    locationManager.requestLocationUpdates(provider, 400, 1, this);
+	}
+
+	/* Remove the locationlistener updates when Activity is paused */
+	@Override
+	protected void onPause() {
+	    super.onPause();
+	    locationManager.removeUpdates(this);
+	}
+
+	@Override
+	public void onLocationChanged(Location location)
+	{
+		currentLat = location.getLatitude();
+		currentLong = location.getLongitude();
+	}
+	
+	@Override
+	public void onStatusChanged(String provider, int status, Bundle extras) 
+	{
+	    // TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void onProviderEnabled(String provider) 
+	{
+		Toast.makeText(this, "Enabled new provider " + provider,
+				Toast.LENGTH_SHORT).show();
+
+	}
+
+	@Override
+	public void onProviderDisabled(String provider) 
+	{
+		Toast.makeText(this, "Disabled provider " + provider,
+				Toast.LENGTH_SHORT).show();
+	}	
+
 	private void addRoomType()
 	{
 		LayoutInflater inflater = LayoutInflater.from(this);
@@ -290,6 +351,36 @@ public class PropDetailActivity extends Activity
 				Contacts.CONTENT_URI);
 		
 		startActivityForResult(i, PICK_REQUEST);
+	}
+	
+	// "Urrr... *AHEM* Dis 'ere be yer gubbinz for managing da map, boss. Ye, AGAIN."
+	public void doMapGubbinz()
+	{
+	    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+	   
+	    Criteria criteria = new Criteria();
+	    
+	    provider = locationManager.getBestProvider(criteria, false);
+	    
+        locationManager.requestLocationUpdates(provider, 400, 1, this);
+        
+	    Location location = locationManager.getLastKnownLocation(provider);		
+	    
+	    if (location != null) 
+	    {
+	    	System.out.println("Provider " + provider + " has been selected.");
+	    	onLocationChanged(location);
+	    } 
+		currentLat = location.getLatitude();
+		currentLong = location.getLongitude();
+	    
+//		LatLng here = new LatLng(currentLat, currentLong);
+//		
+//		Marker currentLoc = map.addMarker(new MarkerOptions().position(here).title("Ubicación actual"));
+//		
+//		map.moveCamera(CameraUpdateFactory.newLatLngZoom(here, 15));
+//		
+//		map.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
 	}
 	
 //	public void viewContact(View v)
