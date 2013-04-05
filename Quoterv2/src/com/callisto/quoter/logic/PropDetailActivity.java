@@ -37,6 +37,7 @@ import com.callisto.quoter.database.QuoterDBHelper;
 import com.callisto.quoter.database.TablePropTypes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -49,11 +50,12 @@ public class PropDetailActivity extends Activity implements LocationListener
 		ADD_ID = Menu.FIRST + 1,
 		DELETE_ID = Menu.FIRST + 3;					
 
-	Button btnOwner, btnRooms;
+	Button btnLocation, btnOwner, btnRooms;
 	TextView txtOwner;
 	
 	Spinner daSpinnerType;
 	
+	// "Stores info 'bout that zoggin' owner, boss."
 	Uri contact;
 	
 	private SimpleCursorAdapter daAdapter;
@@ -64,6 +66,7 @@ public class PropDetailActivity extends Activity implements LocationListener
 	private LocationManager locationManager;
     private String provider;
 	private double currentLat, currentLong;
+	private GoogleMap map;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -73,12 +76,23 @@ public class PropDetailActivity extends Activity implements LocationListener
 	
 		daSpinnerType = (Spinner) findViewById(R.id.spinnerType);
 		
+		btnLocation = (Button) findViewById(R.id.btnLocation);
+		btnRooms = (Button) findViewById(R.id.btnRooms);
+		
 		txtOwner = (TextView) findViewById(R.id.txtOwner);
 		btnOwner = (Button) findViewById(R.id.btnOwner);
+
+		btnRooms.setOnClickListener(new OnClickListener()
+		{	
+			@Override
+			public void onClick(View v)
+			{
+				startRoomsActivity();
+			}
+		});
 		
 		btnOwner.setOnClickListener(new OnClickListener()
 		{
-			
 			@Override
 			public void onClick(View v)
 			{
@@ -86,12 +100,24 @@ public class PropDetailActivity extends Activity implements LocationListener
 			}
 		});
 		
-		btnRooms.setOnClickListener(new View.OnClickListener()
-		{	
+		txtOwner.setOnClickListener(new OnClickListener()
+		{			
 			@Override
 			public void onClick(View v)
 			{
-				startRoomsActivity();
+				if (txtOwner.getText() != "")
+				{
+					viewContact(v);
+				}
+			}
+		});
+		
+		btnLocation.setOnClickListener(new OnClickListener()
+		{			
+			@Override
+			public void onClick(View v)
+			{
+				openGps();
 			}
 		});
 		
@@ -133,7 +159,7 @@ public class PropDetailActivity extends Activity implements LocationListener
 			{
 			case PICK_REQUEST:
 			{
-				Cursor cursor = null;
+//				Cursor cursor = null;
 				
 				try
 				{
@@ -178,13 +204,13 @@ public class PropDetailActivity extends Activity implements LocationListener
 				{
 					System.out.println("Cannot retrieve contact info");
 				}
-				finally
-				{
-					if (cursor != null)
-					{
-						cursor.close();
-					}
-				}
+//				finally
+//				{
+//					if (cursor != null)
+//					{
+//						cursor.close();
+//					}
+//				}
 			}
 			default:
 				break;			
@@ -258,7 +284,6 @@ public class PropDetailActivity extends Activity implements LocationListener
 	@Override
 	public void onStatusChanged(String provider, int status, Bundle extras) 
 	{
-	    // TODO Auto-generated method stub
 
 	}
 
@@ -277,6 +302,28 @@ public class PropDetailActivity extends Activity implements LocationListener
 				Toast.LENGTH_SHORT).show();
 	}	
 
+	private void openGps()
+	{
+		LayoutInflater inflater = LayoutInflater.from(this);
+		
+		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+
+		View gps = inflater.inflate(R.layout.location_gps, null);
+		
+		LatLng here = new LatLng(currentLat, currentLong);
+		
+		Marker currentLoc = map.addMarker(new MarkerOptions().position(here).title("Ubicación actual"));
+		
+		map.moveCamera(CameraUpdateFactory.newLatLngZoom(here, 15));
+		
+		map.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+
+		new AlertDialog.Builder(this)
+			.setTitle("Property location")
+			.setView(gps)
+			.show();
+	}
+	
 	private void addRoomType()
 	{
 		LayoutInflater inflater = LayoutInflater.from(this);
@@ -383,10 +430,10 @@ public class PropDetailActivity extends Activity implements LocationListener
 //		map.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
 	}
 	
-//	public void viewContact(View v)
-//	{
-//		startActivity(new Intent(Intent.ACTION_VIEW, contact));
-//	}
+	public void viewContact(View v)
+	{
+		startActivity(new Intent(Intent.ACTION_VIEW, contact));
+	}
 	
 	class AddTypeDialogWrapper
 	{
