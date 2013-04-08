@@ -2,6 +2,7 @@ package com.callisto.quoter.logic;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.FragmentTransaction;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,8 +39,8 @@ import com.callisto.quoter.database.TablePropTypes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class PropDetailActivity extends Activity implements LocationListener
@@ -56,17 +57,17 @@ public class PropDetailActivity extends Activity implements LocationListener
 	Spinner daSpinnerType;
 	
 	// "Stores info 'bout that zoggin' owner, boss."
-	Uri contact;
+	Uri daContact;
 	
 	private SimpleCursorAdapter daAdapter;
 
-	long propId;
+	long daPropId;
 
 	// "We be needing 'em fer da map to do its job, boss."
-	private LocationManager locationManager;
-    private String provider;
-	private double currentLat, currentLong;
-	private GoogleMap map;
+	private LocationManager daLocationManager;
+    private String daProvider;
+	private double daCurrentLat, daCurrentLong;
+//	private GoogleMap daMap;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -127,11 +128,11 @@ public class PropDetailActivity extends Activity implements LocationListener
 	    
 	    if(extras == null) 
 	    {
-	        propId = 0;
+	        daPropId = 0;
 	    } 
 	    else 
 	    {
-	        propId = extras.getLong("propId");
+	        daPropId = extras.getLong("propId");
 	    }
 	    
 	    doMapGubbinz();
@@ -264,21 +265,21 @@ public class PropDetailActivity extends Activity implements LocationListener
 	@Override
 	protected void onResume() {
 	    super.onResume();
-	    locationManager.requestLocationUpdates(provider, 400, 1, this);
+	    daLocationManager.requestLocationUpdates(daProvider, 400, 1, this);
 	}
 
 	/* Remove the locationlistener updates when Activity is paused */
 	@Override
 	protected void onPause() {
 	    super.onPause();
-	    locationManager.removeUpdates(this);
+	    daLocationManager.removeUpdates(this);
 	}
 
 	@Override
 	public void onLocationChanged(Location location)
 	{
-		currentLat = location.getLatitude();
-		currentLong = location.getLongitude();
+		daCurrentLat = location.getLatitude();
+		daCurrentLong = location.getLongitude();
 	}
 	
 	@Override
@@ -302,26 +303,39 @@ public class PropDetailActivity extends Activity implements LocationListener
 				Toast.LENGTH_SHORT).show();
 	}	
 
+	/**
+	 * Research log:
+	 * - stackoverflow.com/questions/14659705/android-maps-api-v2-in-dialog [not working: map object not instantiated]
+	 * - stackoverflow.com/questions/13733299/initialize-mapfragment-programmatically-with-maps-api-v2
+	 * 
+	 */
 	private void openGps()
 	{
 		LayoutInflater inflater = LayoutInflater.from(this);
+
+		LatLng here = new LatLng(daCurrentLat, daCurrentLong);
+
+		MapFragment fragment = PreparedMapFragment.newInstance(here);
 		
-		map = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		
+		transaction.add(R.id.mapView, fragment)
+			.commit();
+		
+		//daMap = fragment.getMap();
 
 		View gps = inflater.inflate(R.layout.location_gps, null);
 		
-		LatLng here = new LatLng(currentLat, currentLong);
-		
-		Marker currentLoc = map.addMarker(new MarkerOptions().position(here).title("Ubicación actual"));
-		
-		map.moveCamera(CameraUpdateFactory.newLatLngZoom(here, 15));
-		
-		map.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
-
 		new AlertDialog.Builder(this)
 			.setTitle("Property location")
 			.setView(gps)
 			.show();
+
+//		Marker currentLoc = daMap.addMarker(new MarkerOptions().position(here).title("Ubicación actual"));
+//		
+//		daMap.moveCamera(CameraUpdateFactory.newLatLngZoom(here, 15));
+//		
+//		daMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
 	}
 	
 	private void addRoomType()
@@ -387,7 +401,7 @@ public class PropDetailActivity extends Activity implements LocationListener
 		
 		intent.setClass(this, RoomDetailTabhost.class);
 		
-		intent.putExtra("propId", this.propId);
+		intent.putExtra("propId", this.daPropId);
 
 		startActivity(intent);
 	}
@@ -403,36 +417,28 @@ public class PropDetailActivity extends Activity implements LocationListener
 	// "Urrr... *AHEM* Dis 'ere be yer gubbinz for managing da map, boss. Ye, AGAIN."
 	public void doMapGubbinz()
 	{
-	    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+	    daLocationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 	   
 	    Criteria criteria = new Criteria();
 	    
-	    provider = locationManager.getBestProvider(criteria, false);
+	    daProvider = daLocationManager.getBestProvider(criteria, false);
 	    
-        locationManager.requestLocationUpdates(provider, 400, 1, this);
+        daLocationManager.requestLocationUpdates(daProvider, 400, 1, this);
         
-	    Location location = locationManager.getLastKnownLocation(provider);		
+	    Location location = daLocationManager.getLastKnownLocation(daProvider);		
 	    
 	    if (location != null) 
 	    {
-	    	System.out.println("Provider " + provider + " has been selected.");
+	    	System.out.println("Provider " + daProvider + " has been selected.");
 	    	onLocationChanged(location);
 	    } 
-		currentLat = location.getLatitude();
-		currentLong = location.getLongitude();
-	    
-//		LatLng here = new LatLng(currentLat, currentLong);
-//		
-//		Marker currentLoc = map.addMarker(new MarkerOptions().position(here).title("Ubicación actual"));
-//		
-//		map.moveCamera(CameraUpdateFactory.newLatLngZoom(here, 15));
-//		
-//		map.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+		daCurrentLat = location.getLatitude();
+		daCurrentLong = location.getLongitude();
 	}
 	
 	public void viewContact(View v)
 	{
-		startActivity(new Intent(Intent.ACTION_VIEW, contact));
+		startActivity(new Intent(Intent.ACTION_VIEW, daContact));
 	}
 	
 	class AddTypeDialogWrapper
@@ -460,5 +466,55 @@ public class PropDetailActivity extends Activity implements LocationListener
 			
 			return (nameField);
 		}
+	}
+	
+	static public class PreparedMapFragment extends MapFragment
+	{
+		static MapFragment frag;
+		
+		public PreparedMapFragment() 
+		{
+			super();
+		}
+		
+		public static MapFragment newInstance(LatLng pos)
+		{
+			frag = new MapFragment();
+			
+			UiSettings settings = frag.getMap().getUiSettings();
+			
+			settings.setAllGesturesEnabled(false);
+			settings.setMyLocationButtonEnabled(false);
+			
+			frag.getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(pos, 16));
+			
+			frag.getMap().addMarker(new MarkerOptions().position(pos).title("Ubicación actual"));
+
+			frag.getMap().animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+
+			return frag;
+		}
+		
+//		@Override
+//		public View onCreateView(LayoutInflater arg0, ViewGroup arg1, Bundle arg2)
+//		{
+//			View v = super.onCreateView(arg0, arg1, arg2);
+//			initMap();
+//			return v;
+//		}
+//
+//		private void initMap()
+//		{
+//			UiSettings settings = getMap().getUiSettings();
+//			
+//			settings.setAllGesturesEnabled(false);
+//			settings.setMyLocationButtonEnabled(false);
+//			
+//			getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(daCurrentPos, 16));
+//			
+//			getMap().addMarker(new MarkerOptions().position(daCurrentPos).title("Ubicación actual"));
+//
+//			getMap().animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+//		}
 	}
 }
