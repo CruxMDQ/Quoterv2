@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/Type"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" 
+        android:layout_height="0dp" 
         android:layout_weight="10">
 
         <TextView
@@ -31,8 +31,8 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="90"
+        android:layout_height="0dp"
+        android:layout_weight="70"
         android:orientation="horizontal"
         android:baselineAligned="false" 
         android:weightSum="2">
@@ -85,4 +85,57 @@
 
 	</LinearLayout>
 	
+	<LinearLayout
+    	android:orientation="horizontal"
+        android:layout_weight="20"
+    	android:layout_width="match_parent"
+    	android:layout_height="0dp"
+    	android:weightSum="2" >
+
+	    <LinearLayout
+	        android:orientation="vertical"
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1">
+	        
+		    <Button
+		        android:text="Defying gravity!"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" />
+		    
+		    <Button
+		        android:text="Floating middle right"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" />
+		    
+		    <Button
+		        android:text="Falling like an apple :P"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" />
+   	    </LinearLayout>
+    
+	    <LinearLayout
+	        android:orientation="vertical"
+	        android:layout_width="0dp"
+	        android:layout_height="match_parent"
+	        android:layout_weight="1">
+	        
+		    <Button
+		        android:text="Defying gravity!"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" />
+		    
+		    <Button
+		        android:text="Floating middle right"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" />
+		    
+		    <Button
+		        android:text="Falling like an apple :P"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content" />
+   	    </LinearLayout>
+	    
+   	</LinearLayout>
+
 </LinearLayout>

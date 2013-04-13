@@ -36,6 +36,7 @@ import com.callisto.quoter.R;
 import com.callisto.quoter.contentprovider.QuoterContentProvider;
 import com.callisto.quoter.database.QuoterDBHelper;
 import com.callisto.quoter.database.TablePropTypes;
+import com.callisto.quoter.database.TableRoomTypes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -48,18 +49,19 @@ public class PropDetailActivity extends Activity implements LocationListener
 	static final int PICK_REQUEST = 70003;
 
 	private static final int TABLE_PROP_TYPES = 13,
+		TABLE_ROOMTYPES = 16,
 		ADD_ID = Menu.FIRST + 1,
 		DELETE_ID = Menu.FIRST + 3;					
 
 	Button btnLocation, btnOwner, btnRooms;
 	TextView txtOwner;
 	
-	Spinner daSpinnerType;
+	Spinner daSpinnerPropTypes, daSpinnerRoomTypes;
 	
 	// "Stores info 'bout that zoggin' owner, boss."
 	Uri daContact;
 	
-	private SimpleCursorAdapter daAdapter;
+	private SimpleCursorAdapter daPropTypesAdapter, daRoomTypesAdapter;
 
 	long daPropId;
 
@@ -75,7 +77,7 @@ public class PropDetailActivity extends Activity implements LocationListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.prop_detail);
 	
-		daSpinnerType = (Spinner) findViewById(R.id.spinnerType);
+		daSpinnerPropTypes = (Spinner) findViewById(R.id.spinnerType);
 		
 		btnLocation = (Button) findViewById(R.id.btnLocation);
 		btnRooms = (Button) findViewById(R.id.btnRooms);
@@ -88,7 +90,8 @@ public class PropDetailActivity extends Activity implements LocationListener
 			@Override
 			public void onClick(View v)
 			{
-				startRoomsActivity();
+				addRoom();
+				//startRoomsActivity();
 			}
 		});
 		
@@ -122,7 +125,7 @@ public class PropDetailActivity extends Activity implements LocationListener
 			}
 		});
 		
-		populateSpinner();
+		populatePropTypes();
 		
 	    Bundle extras = getIntent().getExtras();
 	    
@@ -234,7 +237,7 @@ public class PropDetailActivity extends Activity implements LocationListener
 		switch (item.getItemId())
 		{
 		case ADD_ID:
-			addRoomType();
+			addPropType();
 			return (true);
 			
 		case DELETE_ID:
@@ -338,13 +341,13 @@ public class PropDetailActivity extends Activity implements LocationListener
 //		daMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
 	}
 	
-	private void addRoomType()
+	private void addPropType()
 	{
 		LayoutInflater inflater = LayoutInflater.from(this);
 		
 		View addView = inflater.inflate(R.layout.add_type, null);
 		
-		final AddTypeDialogWrapper wrapper = new AddTypeDialogWrapper(addView);
+		final AddPropTypeDialogWrapper wrapper = new AddPropTypeDialogWrapper(addView);
 		
 		new AlertDialog.Builder(this)
 			.setTitle("New property type")
@@ -354,7 +357,7 @@ public class PropDetailActivity extends Activity implements LocationListener
 				{
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						processAddType(wrapper); 
+						processAddRoomType(wrapper); 
 					}
 				})
 			.setNegativeButton(R.string.cancel,
@@ -368,7 +371,41 @@ public class PropDetailActivity extends Activity implements LocationListener
 			).show();			
 	}
 	
-	private void processAddType(AddTypeDialogWrapper wrapper) 
+	private void addRoom()
+	{
+		LayoutInflater inflater = LayoutInflater.from(this);
+		
+		View addView = inflater.inflate(R.layout.add_room, null);
+		
+		final AddRoomDialogWrapper wrapper = new AddRoomDialogWrapper(addView);
+		
+		daSpinnerRoomTypes = wrapper.getSpinner();
+		
+		populateRoomTypes();
+		
+		new AlertDialog.Builder(this)
+			.setTitle("Select initial room")
+			.setView(addView)
+			.setPositiveButton(R.string.ok,
+				new DialogInterface.OnClickListener() 
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						startRoomsActivity(daPropId, wrapper.getSpinner().getSelectedItem().toString());
+					}
+				})
+			.setNegativeButton(R.string.cancel,
+				new DialogInterface.OnClickListener()
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+	
+					}
+				}
+			).show();			
+	}
+	
+	private void processAddRoomType(AddPropTypeDialogWrapper wrapper) 
 	{
 	    ContentValues values = new ContentValues();
 	    
@@ -376,10 +413,10 @@ public class PropDetailActivity extends Activity implements LocationListener
 	    
     	/*quoteUri = */ getContentResolver().insert(QuoterContentProvider.CONTENT_URI_PROP_TYPES, values);
 				
-		populateSpinner();
+		populatePropTypes();
 	}
-
-	private void populateSpinner()
+	
+	private void populatePropTypes()
 	{
 		String[] from = new String[] { TablePropTypes.COLUMN_NAME };
 		
@@ -387,13 +424,30 @@ public class PropDetailActivity extends Activity implements LocationListener
 
 		QuoterDBHelper DAO = new QuoterDBHelper(getApplicationContext());
 		
-		daAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_dropdown_item, 
+		daPropTypesAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_dropdown_item, 
 				DAO.getCursor(TABLE_PROP_TYPES), from, to, 0);
 		
-		daAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		daPropTypesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
-		daSpinnerType.setAdapter(daAdapter);
+		daSpinnerPropTypes.setAdapter(daPropTypesAdapter);
 	}
+
+	private void populateRoomTypes()
+	{
+		String[] from = new String[] { TableRoomTypes.COLUMN_NAME };
+		
+		int[] to = new int[] { android.R.id.text1 };
+
+		QuoterDBHelper DAO = new QuoterDBHelper(getApplicationContext());
+		
+		daRoomTypesAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_dropdown_item, 
+				DAO.getCursor(TABLE_ROOMTYPES), from, to, 0);
+		
+		daRoomTypesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		
+		daSpinnerRoomTypes.setAdapter(daRoomTypesAdapter);
+	}
+	
 
 	public void startRoomsActivity()
 	{
@@ -406,6 +460,19 @@ public class PropDetailActivity extends Activity implements LocationListener
 		startActivity(intent);
 	}
 
+	public void startRoomsActivity(long daPropId, String roomType)
+	{
+		Intent intent = new Intent();
+		
+		intent.setClass(this, RoomDetailTabhost.class);
+		
+		intent.putExtra("propId", daPropId);
+		
+		intent.putExtra("roomType", roomType);
+
+		startActivity(intent);
+	}
+	
 	public void pickContact(View v)
 	{
 		Intent i = new Intent(Intent.ACTION_PICK,
@@ -441,12 +508,12 @@ public class PropDetailActivity extends Activity implements LocationListener
 		startActivity(new Intent(Intent.ACTION_VIEW, daContact));
 	}
 	
-	class AddTypeDialogWrapper
+	class AddPropTypeDialogWrapper
 	{
 		EditText nameField = null;
 		View base = null;
 		
-		AddTypeDialogWrapper(View base)
+		AddPropTypeDialogWrapper(View base)
 		{
 			this.base = base;
 			nameField = (EditText) base.findViewById(R.id.txtName);
@@ -465,6 +532,33 @@ public class PropDetailActivity extends Activity implements LocationListener
 			}
 			
 			return (nameField);
+		}
+	}
+	
+	class AddRoomDialogWrapper
+	{
+		Spinner spinnerType = null;
+		View base = null;
+		
+		AddRoomDialogWrapper(View base)
+		{
+			this.base = base;
+			spinnerType = (Spinner) base.findViewById(R.id.spnRoomType);
+		}
+		
+//		String getName()
+//		{
+//			return (getSpinnerText().getText().toString());
+//		}
+//		
+		private Spinner getSpinner()
+		{
+			if (spinnerType == null)
+			{
+				spinnerType = (Spinner) base.findViewById(R.id.spnRoomType);
+			}
+			
+			return (spinnerType);
 		}
 	}
 	

@@ -36,7 +36,7 @@ import com.callisto.quoter.database.TableRoomTypes;
 public class RoomDetailActivity extends Activity
 	implements LoaderManager.LoaderCallbacks<Cursor>
 {
-	private final int TABLE_ROOMTYPES = 16;
+	private static final int TABLE_ROOMTYPES = 16;
 	
 //	private TabHost tabHost = null;
 
@@ -58,6 +58,7 @@ public class RoomDetailActivity extends Activity
 //		ADD_TAB = Menu.FIRST + 11;
 
 	private long propId;
+	private String initialRoomType;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -74,11 +75,12 @@ public class RoomDetailActivity extends Activity
 	    else 
 	    {
 	        propId = extras.getLong("propId");
+	        initialRoomType = extras.getString("roomType");
 	    }
 		
 		daSpinnerType = (Spinner) findViewById(R.id.spinnerType);
 		
-		populateSpinner();
+		populateRoomTypes();
 		
 		daImageView = (ImageView) findViewById(R.id.imgDisplayImage);
 		
@@ -215,7 +217,7 @@ public class RoomDetailActivity extends Activity
 		
 	}
 
-	private void populateSpinner()
+	private void populateRoomTypes()
 	{
 		String[] from = new String[] { TableRoomTypes.COLUMN_NAME };
 		
@@ -269,7 +271,7 @@ public class RoomDetailActivity extends Activity
 	    
     	/*quoteUri = */ getContentResolver().insert(QuoterContentProvider.CONTENT_URI_ROOM_TYPES, values);
 				
-		populateSpinner();
+		populateRoomTypes();
 	}
 
 	@Override
