@@ -24,6 +24,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -57,6 +58,8 @@ public class PropDetailActivity extends Activity implements LocationListener
 	TextView txtOwner;
 	
 	Spinner daSpinnerPropTypes, daSpinnerRoomTypes;
+	
+	Object daSpinnerSelekshun;
 	
 	// "Stores info 'bout that zoggin' owner, boss."
 	Uri daContact;
@@ -381,6 +384,22 @@ public class PropDetailActivity extends Activity implements LocationListener
 		
 		daSpinnerRoomTypes = wrapper.getSpinner();
 		
+		daSpinnerPropTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+		{
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int pos, long id)
+			{
+				daSpinnerSelekshun = parent.getItemAtPosition(pos);
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> arg0)
+			{
+				// "Nothing 'appens 'ere, boss."
+			}
+		});
+		
 		populateRoomTypes();
 		
 		new AlertDialog.Builder(this)
@@ -391,7 +410,12 @@ public class PropDetailActivity extends Activity implements LocationListener
 				{
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						startRoomsActivity(daPropId, wrapper.getSpinner().getSelectedItem().toString());
+						// TODO Figure how to get text from a spinner linked to a database via an Adapter (note link to solution when done)
+						
+						daSpinnerSelekshun = wrapper.getSpinner().getAdapter().getItem((int) wrapper.getSpinner().getSelectedItemId());
+						
+//						startRoomsActivity(daPropId, wrapper.getSpinner().getSelectedItem().toString());
+						startRoomsActivity(daPropId, daSpinnerSelekshun.toString());
 					}
 				})
 			.setNegativeButton(R.string.cancel,

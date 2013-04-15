@@ -23,6 +23,8 @@ public class RoomDetailTabhost extends TabActivity
 	private int z = 0;
 
 	private long propId;
+	
+	private String roomType;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -41,6 +43,8 @@ public class RoomDetailTabhost extends TabActivity
 	    else 
 	    {
 	        propId = extras.getLong("propId");
+	        
+	        roomType = extras.getString("roomType");
 	    }
 		
 		Intent newTab = new Intent();
@@ -51,7 +55,7 @@ public class RoomDetailTabhost extends TabActivity
 		
 		tabHost.addTab(
 				tabHost.newTabSpec("Main")
-				.setIndicator("New room")
+				.setIndicator(roomType)
 				.setContent(newTab)
 				);
 	}
