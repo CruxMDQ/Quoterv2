@@ -1,10 +1,5 @@
 package com.callisto.quoter.logic;
 
-import com.callisto.quoter.R;
-import com.callisto.quoter.database.QuoterDBHelper;
-import com.callisto.quoter.database.TableRoomTypes;
-import com.callisto.quoter.logic.AddRoomDialogWrapper;
-
 import android.app.AlertDialog;
 import android.app.TabActivity;
 import android.content.DialogInterface;
@@ -15,11 +10,20 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TabHost;
 import android.widget.TextView;
+
+import com.callisto.quoter.R;
+import com.callisto.quoter.database.QuoterDBHelper;
+import com.callisto.quoter.database.TableRoomTypes;
+
+// TODO Figure how to get text from a spinner linked to a database via an Adapter (note link to solution when done)
+// COMPLETED: http://stackoverflow.com/questions/5787809/get-spinner-selected-items-text
+
+// TODO Code data saving to database logic
+// TODO Code data retrieval from database logic
 
 @SuppressWarnings("deprecation")
 public class RoomDetailTabhost extends TabActivity
@@ -33,9 +37,9 @@ public class RoomDetailTabhost extends TabActivity
 
 	private int z = 0;
 
-	private long daPropId;
+	private long daPropId, daRoomId;
 	
-	private String roomType;
+	private String daRoomType;
 	
 	private Spinner daSpinnerRoomTypes;
 	
@@ -61,7 +65,7 @@ public class RoomDetailTabhost extends TabActivity
 	    {
 	        daPropId = extras.getLong("propId");
 	        
-	        roomType = extras.getString("roomType");
+	        daRoomType = extras.getString("roomType");
 	    }
 		
 		Intent newTab = new Intent();
@@ -72,9 +76,27 @@ public class RoomDetailTabhost extends TabActivity
 		
 		tabHost.addTab(
 				tabHost.newTabSpec("Main")
-				.setIndicator(roomType)
+				.setIndicator(daRoomType)
 				.setContent(newTab)
 				);
+	}
+	
+	@Override
+	protected void onPause()
+	{
+		super.onPause();
+		
+		/***
+		 * PSEUDOCODE
+		 * 
+		 * - Get writable database
+		 * - Prepare content values
+		 * - Write stuff to database (uses daPropId)
+		 * - Assign row id to daRoomId field
+		 * - Close database
+		 */
+		
+		
 	}
 	
 	private void doTabGubbinz()
@@ -87,7 +109,7 @@ public class RoomDetailTabhost extends TabActivity
 		
 		tabHost.addTab(
 				tabHost.newTabSpec("NewRoomTab")
-						.setIndicator(roomType)
+						.setIndicator(daRoomType)
 						.setContent(newTab)
 				);
 
@@ -135,12 +157,9 @@ public class RoomDetailTabhost extends TabActivity
 					@Override
 					public void onClick(DialogInterface dialog, int which) 
 					{
-						// TODO Figure how to get text from a spinner linked to a database via an Adapter (note link to solution when done)
-						// COMPLETED: http://stackoverflow.com/questions/5787809/get-spinner-selected-items-text
-						
 						TextView t = (TextView) daSpinnerRoomTypes.getSelectedView();
 						
-						roomType = t.getText().toString();
+						daRoomType = t.getText().toString();
 						
 						doTabGubbinz();
 						//startRoomsActivity(daPropId, t.getText().toString());

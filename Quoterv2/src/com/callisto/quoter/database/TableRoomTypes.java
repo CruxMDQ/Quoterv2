@@ -28,29 +28,29 @@ public class TableRoomTypes
 
 		if (db.rawQuery("SELECT * FROM " + TABLE_ROOMTYPES + " WHERE " + COLUMN_NAME + " = 'Bedroom';", null).getCount() == 0)
 		{
-			simpleInsert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Bedroom");
+			insert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Bedroom");
 			
 //			cv.put(COLUMN_NAME, "Bedroom");
 //			db.insert(TABLE_ROOMTYPES, COLUMN_NAME, cv);
 			  
-			simpleInsert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Bathroom");
+			insert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Bathroom");
 
 //			cv.put(COLUMN_NAME, "Bathroom");
 //			db.insert(TABLE_ROOMTYPES, COLUMN_NAME, cv);
 			  
-			simpleInsert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Kitchen");
+			insert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Kitchen");
 
 //			cv.put(COLUMN_NAME, "Kitchen");
 //			db.insert(TABLE_ROOMTYPES, COLUMN_NAME, cv);
 			  
-			simpleInsert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Living room");
+			insert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Living room");
 			
 //			cv.put(COLUMN_NAME, "Living room");
 //			db.insert(TABLE_ROOMTYPES, COLUMN_NAME, cv);
 	    }
 	}
 	
-	private static void simpleInsert(SQLiteDatabase db, String table, String col, String value)
+	public static void insert(SQLiteDatabase db, String table, String col, String value)
 	{
 		try
 		{

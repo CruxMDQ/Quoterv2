@@ -41,6 +41,4 @@ public class TablePropValues
 		
 		onCreate(db);
 	}
-	
-
 }

@@ -31,16 +31,24 @@ import android.widget.Spinner;
 import com.callisto.quoter.R;
 import com.callisto.quoter.contentprovider.QuoterContentProvider;
 import com.callisto.quoter.database.QuoterDBHelper;
+import com.callisto.quoter.database.TablePropRooms;
+import com.callisto.quoter.database.TableProperties;
 import com.callisto.quoter.database.TableRoomTypes;
+import com.callisto.quoter.database.TableRooms;
 
 public class RoomDetailActivity extends Activity
 	implements LoaderManager.LoaderCallbacks<Cursor>
 {
-	private static final int TABLE_ROOMTYPES = 16;
+	private static final int 
+		TABLE_PROP_ROOMS = 10,
+		TABLE_ROOMS = 15,
+		TABLE_ROOMTYPES = 16;
 	
 //	private TabHost tabHost = null;
 
 	private Spinner daSpinnerType;
+	
+	private EditText daTxtWidthX, daTxtWidthY, daTxtFloors;
 	
 	// "Dis 'ere gubbinz are fer da kamera to do work propa."
 	private ImageView daImageView;
@@ -57,9 +65,9 @@ public class RoomDetailActivity extends Activity
 		DELETE_ID = Menu.FIRST + 3;					
 //		ADD_TAB = Menu.FIRST + 11;
 
-	private long propId;
+	private long daPropId, daRoomId = -1;
 	private String initialRoomType;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -70,16 +78,20 @@ public class RoomDetailActivity extends Activity
 	    
 	    if(extras == null) 
 	    {
-	        propId = 0;
+	        daPropId = 0;
 	    } 
 	    else 
 	    {
-	        propId = extras.getLong("propId");
+	        daPropId = extras.getLong("propId");
 	        
 	        initialRoomType = extras.getString("roomType");
 	    }
 		
 		daSpinnerType = (Spinner) findViewById(R.id.spnPropType);
+		
+		daTxtWidthX = (EditText) findViewById(R.id.txtWidthX);
+		daTxtWidthY = (EditText) findViewById(R.id.txtWidthY);
+		daTxtFloors = (EditText) findViewById(R.id.txtFloors);
 		
 		populateRoomTypes();
 		
@@ -212,26 +224,12 @@ public class RoomDetailActivity extends Activity
 		}
 	}
 
-	private void deleteRoomType()
+	@Override
+	protected void onPause()
 	{
-		// TODO Implement this
-		
-	}
+		super.onPause();
 
-	private void populateRoomTypes()
-	{
-		String[] from = new String[] { TableRoomTypes.COLUMN_NAME };
-		
-		int[] to = new int[] { android.R.id.text1 };
-
-		QuoterDBHelper DAO = new QuoterDBHelper(getApplicationContext());
-		
-		daAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_dropdown_item, 
-				DAO.getCursor(TABLE_ROOMTYPES), from, to, 0);
-		
-		daAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		
-		daSpinnerType.setAdapter(daAdapter);
+		saveStuff();
 	}
 	
 	private void addRoomType()
@@ -263,6 +261,28 @@ public class RoomDetailActivity extends Activity
 				}
 			).show();			
 	}
+
+	private void deleteRoomType()
+	{
+		// TODO Implement this
+		
+	}
+
+	private void populateRoomTypes()
+	{
+		String[] from = new String[] { TableRoomTypes.COLUMN_NAME };
+		
+		int[] to = new int[] { android.R.id.text1 };
+
+		QuoterDBHelper DAO = new QuoterDBHelper(getApplicationContext());
+		
+		daAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_dropdown_item, 
+				DAO.getCursor(TABLE_ROOMTYPES), from, to, 0);
+		
+		daAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		
+		daSpinnerType.setAdapter(daAdapter);
+	}
 	
 	private void processAddType(AddRoomTypeDialogWrapper wrapper) 
 	{
@@ -273,6 +293,77 @@ public class RoomDetailActivity extends Activity
     	/*quoteUri = */ getContentResolver().insert(QuoterContentProvider.CONTENT_URI_ROOM_TYPES, values);
 				
 		populateRoomTypes();
+	}
+	
+	private void saveStuff()
+	{
+		/*** TODO Get this stuff done!
+		 * PSEUDOCODE
+		 * 
+		 * - Get writable database
+		 * - Prepare content values
+		 * - Write stuff to rooms table (retrieves daRoomId)
+		 * - Assign row id to daRoomId field
+		 * - Write stuff to rooms<->properties table
+		 * - Close database
+		 * 
+		 * Column list:
+		 * 		COLUMN_ID_ROOM = "_id_room",
+				COLUMN_ROOM_WIDTH_X = "width_x",
+				COLUMN_ROOM_WIDTH_Y = "width_y",
+				COLUMN_FLOORS = "pisos",
+				COLUMN_DETAILS = "detalles",
+				COLUMN_PICTURE = "Imagen",
+		 */
+		try
+		{
+			QuoterDBHelper DAO = new QuoterDBHelper(getApplicationContext());
+	
+			ContentValues roomDetails = new ContentValues();
+			
+			/*** TODO Log detail about casting from string to float found at: 
+			 * stackoverflow.com/questions/4229710/string-from-edittext-to-float
+			 */
+			String s1 = daTxtWidthX.getText().toString();
+			String s2 = daTxtWidthY.getText().toString();
+			
+			if (/*daTxtWidthX.getText().toString()*/ !s1.equals(""))
+			{
+				roomDetails.put(TableRooms.COLUMN_ROOM_WIDTH_X, Float.valueOf(daTxtWidthX.getText().toString()));
+			}
+			
+			if (/*daTxtWidthY.getText().toString()*/ !s2.equals(""))
+			{
+				roomDetails.put(TableRooms.COLUMN_ROOM_WIDTH_Y, Float.valueOf(daTxtWidthY.getText().toString()));
+			}
+			
+//			roomDetails.put("COLUMN_ROOM_WIDTH_X", Float.valueOf(daTxtWidthX.getText().toString()));
+//			roomDetails.put("COLUMN_ROOM_WIDTH_Y", Float.valueOf(daTxtWidthY.getText().toString()));
+			roomDetails.put(TableRooms.COLUMN_FLOORS, daTxtFloors.getText().toString());
+			roomDetails.put(TableRooms.COLUMN_DETAILS, "TEST");
+			roomDetails.put(TableRooms.COLUMN_PICTURE, daPhotoPath);
+		
+			if (daRoomId == -1)
+			{
+				daRoomId = DAO.insert(TABLE_ROOMS, roomDetails);
+			}
+			else
+			{
+				DAO.insert(TABLE_ROOMS, roomDetails);
+			}
+				
+			ContentValues propRooms = new ContentValues();
+			
+			propRooms.put(TableProperties.COLUMN_ID_PROPERTY, daPropId);
+			propRooms.put(TableRooms.COLUMN_ID_ROOM, daRoomId);
+			
+			DAO.insert(TABLE_PROP_ROOMS, propRooms);
+		}
+		catch(Exception e)
+		{
+			System.out.println("Exception on insert on TABLE_ROOMS step");
+			System.out.println(e.getMessage());
+		}
 	}
 
 	@Override

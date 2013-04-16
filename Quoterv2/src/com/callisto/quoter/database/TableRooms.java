@@ -50,6 +50,4 @@ public class TableRooms
 		
 		onCreate(db);
 	}
-
-
 }
