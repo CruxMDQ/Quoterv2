@@ -75,10 +75,11 @@ public class RoomDetailActivity extends Activity
 	    else 
 	    {
 	        propId = extras.getLong("propId");
+	        
 	        initialRoomType = extras.getString("roomType");
 	    }
 		
-		daSpinnerType = (Spinner) findViewById(R.id.spinnerType);
+		daSpinnerType = (Spinner) findViewById(R.id.spnPropType);
 		
 		populateRoomTypes();
 		
@@ -213,7 +214,7 @@ public class RoomDetailActivity extends Activity
 
 	private void deleteRoomType()
 	{
-		// TODO Auto-generated method stub
+		// TODO Implement this
 		
 	}
 
@@ -239,7 +240,7 @@ public class RoomDetailActivity extends Activity
 		
 		View addView = inflater.inflate(R.layout.add_type, null);
 		
-		final AddTypeDialogWrapper wrapper = new AddTypeDialogWrapper(addView);
+		final AddRoomTypeDialogWrapper wrapper = new AddRoomTypeDialogWrapper(addView);
 		
 		new AlertDialog.Builder(this)
 			.setTitle(R.string.add_type_title)
@@ -263,7 +264,7 @@ public class RoomDetailActivity extends Activity
 			).show();			
 	}
 	
-	private void processAddType(AddTypeDialogWrapper wrapper) 
+	private void processAddType(AddRoomTypeDialogWrapper wrapper) 
 	{
 	    ContentValues values = new ContentValues();
 	    
@@ -300,12 +301,12 @@ public class RoomDetailActivity extends Activity
 		daAdapter.swapCursor(null);
 	}
 
-	class AddTypeDialogWrapper
+	class AddRoomTypeDialogWrapper
 	{
 		EditText nameField = null;
 		View base = null;
 		
-		AddTypeDialogWrapper(View base)
+		AddRoomTypeDialogWrapper(View base)
 		{
 			this.base = base;
 			nameField = (EditText) base.findViewById(R.id.txtName);
@@ -326,7 +327,35 @@ public class RoomDetailActivity extends Activity
 			return (nameField);
 		}
 	}
+	
+	class AddRoomDialogWrapper
+	{
+		Spinner spinnerType = null;
+		View base = null;
+		Object item;
+		
+		AddRoomDialogWrapper(View base)
+		{
+			this.base = base;
+			spinnerType = (Spinner) base.findViewById(R.id.spnRoomType);
+		}
 
+		private Spinner getSpinner()
+		{
+			if (spinnerType == null)
+			{
+				spinnerType = (Spinner) base.findViewById(R.id.spnRoomType);
+			}
+			
+			return (spinnerType);
+		}
+		
+		public Object getSelectedItem()
+		{
+			return item;
+		}
+	}
+	
 	// CursorWrapper subclass built to dodge the '_id' requirement for SimpleCursorAdapter
 	// (ref.: http://stackoverflow.com/questions/7796345/column-id-does-not-exist-simplecursoradapter-revisited/7796404#7796404)
 	class MaskingWrapper extends CursorWrapper

@@ -23,7 +23,9 @@ public class TableRoomTypes
 				+ " FROM " + TABLE_ROOMTYPES + ";";
 	
 	public static void onCreate(SQLiteDatabase db)
-	{
+	{		
+		db.execSQL(DATABASE_CREATE);
+
 		if (db.rawQuery("SELECT * FROM " + TABLE_ROOMTYPES + " WHERE " + COLUMN_NAME + " = 'Bedroom';", null).getCount() == 0)
 		{
 			simpleInsert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Bedroom");
@@ -46,8 +48,6 @@ public class TableRoomTypes
 //			cv.put(COLUMN_NAME, "Living room");
 //			db.insert(TABLE_ROOMTYPES, COLUMN_NAME, cv);
 	    }
-		
-		db.execSQL(DATABASE_CREATE);
 	}
 	
 	private static void simpleInsert(SQLiteDatabase db, String table, String col, String value)

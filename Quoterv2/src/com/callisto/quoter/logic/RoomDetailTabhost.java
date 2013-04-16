@@ -1,15 +1,25 @@
 package com.callisto.quoter.logic;
 
 import com.callisto.quoter.R;
+import com.callisto.quoter.database.QuoterDBHelper;
+import com.callisto.quoter.database.TableRoomTypes;
+import com.callisto.quoter.logic.AddRoomDialogWrapper;
 
+import android.app.AlertDialog;
 import android.app.TabActivity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.SimpleCursorAdapter;
+import android.widget.Spinner;
 import android.widget.TabHost;
+import android.widget.TextView;
 
 @SuppressWarnings("deprecation")
 public class RoomDetailTabhost extends TabActivity
@@ -18,13 +28,20 @@ public class RoomDetailTabhost extends TabActivity
 	
 	private static final int
 		ADD_TAB = Menu.FIRST + 11,
-		DELETE_TAB = Menu.FIRST + 12;
+		DELETE_TAB = Menu.FIRST + 12,
+		TABLE_ROOMTYPES = 16;
 
 	private int z = 0;
 
-	private long propId;
+	private long daPropId;
 	
 	private String roomType;
+	
+	private Spinner daSpinnerRoomTypes;
+	
+	private SimpleCursorAdapter daRoomTypesAdapter;
+	
+	Object daSpinnerSelekshun;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -38,18 +55,18 @@ public class RoomDetailTabhost extends TabActivity
 	    
 	    if(extras == null) 
 	    {
-	        propId = 0;
+	        daPropId = 0;
 	    } 
 	    else 
 	    {
-	        propId = extras.getLong("propId");
+	        daPropId = extras.getLong("propId");
 	        
 	        roomType = extras.getString("roomType");
 	    }
 		
 		Intent newTab = new Intent();
 
-		newTab.putExtra("propId", this.propId);
+		newTab.putExtra("propId", this.daPropId);
 		
 		newTab.setClass(this, RoomDetailActivity.class);
 		
@@ -60,17 +77,17 @@ public class RoomDetailTabhost extends TabActivity
 				);
 	}
 	
-	private void addTab()
+	private void doTabGubbinz()
 	{
 		Intent newTab = new Intent();
 		
-		newTab.putExtra("propId", this.propId);
+		newTab.putExtra("propId", this.daPropId);
 
 		newTab.setClass(this, RoomDetailActivity.class);
 		
 		tabHost.addTab(
 				tabHost.newTabSpec("NewRoomTab")
-						.setIndicator("New room")
+						.setIndicator(roomType)
 						.setContent(newTab)
 				);
 
@@ -78,8 +95,69 @@ public class RoomDetailTabhost extends TabActivity
 		
 		++z;
 	}
+	
+	private void addTab()
+	{
+		LayoutInflater inflater = LayoutInflater.from(this);
+		
+		View addView = inflater.inflate(R.layout.add_room, null);
+		
+		final AddRoomDialogWrapper wrapper = new AddRoomDialogWrapper(addView);
+		
+		daSpinnerRoomTypes = wrapper.getSpinner();
+		
+//		daSpinnerRoomTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+//		{
+//			@Override
+//			public void onItemSelected(AdapterView<?> parent, View view,
+//					int pos, long id)
+//			{
+//				daSpinnerSelekshun = parent.getItemAtPosition(pos);
+//				
+//				System.out.println(daSpinnerSelekshun.toString());
+//			}
+//
+//			@Override
+//			public void onNothingSelected(AdapterView<?> arg0)
+//			{
+//				// "Nothing 'appens 'ere, boss."
+//			}
+//		});
+		
+		populateRoomTypes();
+		
+		new AlertDialog.Builder(this)
+			.setTitle("Select room type")
+			.setView(addView)
+			.setPositiveButton(R.string.ok,
+				new DialogInterface.OnClickListener()
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int which) 
+					{
+						// TODO Figure how to get text from a spinner linked to a database via an Adapter (note link to solution when done)
+						// COMPLETED: http://stackoverflow.com/questions/5787809/get-spinner-selected-items-text
+						
+						TextView t = (TextView) daSpinnerRoomTypes.getSelectedView();
+						
+						roomType = t.getText().toString();
+						
+						doTabGubbinz();
+						//startRoomsActivity(daPropId, t.getText().toString());
+					}
+				})
+			.setNegativeButton(R.string.cancel,
+				new DialogInterface.OnClickListener()
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+	
+					}
+				}
+			).show();			
+	}
 
-	// "Boss, we really cannot delete one a'dem tab gubbinz, so we hides 'em."
+	// "Boss, we really cannot delete one a'dem tab fingz, so we hides 'em."
 	private void deleteTab() 
 	{
 		int position = tabHost.getCurrentTab();
@@ -143,5 +221,41 @@ public class RoomDetailTabhost extends TabActivity
 		}
 		
 		return (super.onOptionsItemSelected(item));
+	}
+
+	private void populateRoomTypes()
+	{
+		String[] from = new String[] { TableRoomTypes.COLUMN_NAME };
+		
+		int[] to = new int[] { android.R.id.text1 };
+
+		QuoterDBHelper DAO = new QuoterDBHelper(getApplicationContext());
+		
+		daRoomTypesAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_spinner_dropdown_item, 
+				DAO.getCursor(TABLE_ROOMTYPES), from, to, 0);
+		
+		daRoomTypesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		daSpinnerRoomTypes.setAdapter(daRoomTypesAdapter);
+
+		// TODO Write this on thesis report. This approach doesn't work for displaying selected text from a spinner on the tab name: 
+		// http://stackoverflow.com/questions/8938847/android-transform-each-column-of-a-cursor-into-a-string-array
+		
+//		ArrayList<String> columnOne = new ArrayList<String>();
+//		
+//		Cursor DAOCursor = DAO.getCursor(TABLE_ROOMTYPES);
+//		
+//		for (DAOCursor.moveToFirst(); DAOCursor.moveToLast(); DAOCursor.isAfterLast())
+//		{
+//			columnOne.add(DAOCursor.getString(1));
+//		}
+//		
+//		ArrayAdapter<String> tryOne = new ArrayAdapter<String>(this, 
+//				android.R.layout.simple_spinner_item, 
+//				columnOne);
+//				
+//		tryOne.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//		
+//		daSpinnerRoomTypes.setAdapter(tryOne);
 	}
 }

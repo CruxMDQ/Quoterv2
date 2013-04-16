@@ -1,5 +1,7 @@
 package com.callisto.quoter.logic;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
@@ -25,6 +27,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -54,17 +57,22 @@ public class PropDetailActivity extends Activity implements LocationListener
 		ADD_ID = Menu.FIRST + 1,
 		DELETE_ID = Menu.FIRST + 3;					
 
-	Button btnLocation, btnOwner, btnRooms;
+	Button btnLocation, 
+		btnOwner, 
+		btnRooms;
+	
 	TextView txtOwner;
 	
-	Spinner daSpinnerPropTypes, daSpinnerRoomTypes;
+	Spinner daSpinnerPropTypes, 
+		daSpinnerRoomTypes;
 	
 	Object daSpinnerSelekshun;
 	
 	// "Stores info 'bout that zoggin' owner, boss."
 	Uri daContact;
 	
-	private SimpleCursorAdapter daPropTypesAdapter, daRoomTypesAdapter;
+	private SimpleCursorAdapter daPropTypesAdapter, 
+		daRoomTypesAdapter;
 
 	long daPropId;
 
@@ -80,7 +88,7 @@ public class PropDetailActivity extends Activity implements LocationListener
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.prop_detail);
 	
-		daSpinnerPropTypes = (Spinner) findViewById(R.id.spinnerType);
+		daSpinnerPropTypes = (Spinner) findViewById(R.id.spnPropType);
 		
 		btnLocation = (Button) findViewById(R.id.btnLocation);
 		btnRooms = (Button) findViewById(R.id.btnRooms);
@@ -360,7 +368,7 @@ public class PropDetailActivity extends Activity implements LocationListener
 				{
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
-						processAddRoomType(wrapper); 
+						processAddPropType(wrapper); 
 					}
 				})
 			.setNegativeButton(R.string.cancel,
@@ -384,21 +392,23 @@ public class PropDetailActivity extends Activity implements LocationListener
 		
 		daSpinnerRoomTypes = wrapper.getSpinner();
 		
-		daSpinnerPropTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-		{
-			@Override
-			public void onItemSelected(AdapterView<?> parent, View view,
-					int pos, long id)
-			{
-				daSpinnerSelekshun = parent.getItemAtPosition(pos);
-			}
-
-			@Override
-			public void onNothingSelected(AdapterView<?> arg0)
-			{
-				// "Nothing 'appens 'ere, boss."
-			}
-		});
+//		daSpinnerRoomTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
+//		{
+//			@Override
+//			public void onItemSelected(AdapterView<?> parent, View view,
+//					int pos, long id)
+//			{
+//				daSpinnerSelekshun = parent.getItemAtPosition(pos);
+//				
+//				System.out.println(daSpinnerSelekshun.toString());
+//			}
+//
+//			@Override
+//			public void onNothingSelected(AdapterView<?> arg0)
+//			{
+//				// "Nothing 'appens 'ere, boss."
+//			}
+//		});
 		
 		populateRoomTypes();
 		
@@ -409,13 +419,14 @@ public class PropDetailActivity extends Activity implements LocationListener
 				new DialogInterface.OnClickListener() 
 				{
 					@Override
-					public void onClick(DialogInterface dialog, int which) {
+					public void onClick(DialogInterface dialog, int which) 
+					{
 						// TODO Figure how to get text from a spinner linked to a database via an Adapter (note link to solution when done)
+						// COMPLETED: http://stackoverflow.com/questions/5787809/get-spinner-selected-items-text
 						
-						daSpinnerSelekshun = wrapper.getSpinner().getAdapter().getItem((int) wrapper.getSpinner().getSelectedItemId());
+						TextView t = (TextView) daSpinnerRoomTypes.getSelectedView();
 						
-//						startRoomsActivity(daPropId, wrapper.getSpinner().getSelectedItem().toString());
-						startRoomsActivity(daPropId, daSpinnerSelekshun.toString());
+						startRoomsActivity(daPropId, t.getText().toString());
 					}
 				})
 			.setNegativeButton(R.string.cancel,
@@ -429,7 +440,7 @@ public class PropDetailActivity extends Activity implements LocationListener
 			).show();			
 	}
 	
-	private void processAddRoomType(AddPropTypeDialogWrapper wrapper) 
+	private void processAddPropType(AddPropTypeDialogWrapper wrapper) 
 	{
 	    ContentValues values = new ContentValues();
 	    
@@ -468,10 +479,29 @@ public class PropDetailActivity extends Activity implements LocationListener
 				DAO.getCursor(TABLE_ROOMTYPES), from, to, 0);
 		
 		daRoomTypesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-		
+
 		daSpinnerRoomTypes.setAdapter(daRoomTypesAdapter);
+
+		// TODO Write this on thesis report. This approach doesn't work for displaying selected text from a spinner on the tab name: 
+		// http://stackoverflow.com/questions/8938847/android-transform-each-column-of-a-cursor-into-a-string-array
+		
+//		ArrayList<String> columnOne = new ArrayList<String>();
+//		
+//		Cursor DAOCursor = DAO.getCursor(TABLE_ROOMTYPES);
+//		
+//		for (DAOCursor.moveToFirst(); DAOCursor.moveToLast(); DAOCursor.isAfterLast())
+//		{
+//			columnOne.add(DAOCursor.getString(1));
+//		}
+//		
+//		ArrayAdapter<String> tryOne = new ArrayAdapter<String>(this, 
+//				android.R.layout.simple_spinner_item, 
+//				columnOne);
+//				
+//		tryOne.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//		
+//		daSpinnerRoomTypes.setAdapter(tryOne);
 	}
-	
 
 	public void startRoomsActivity()
 	{
@@ -563,18 +593,14 @@ public class PropDetailActivity extends Activity implements LocationListener
 	{
 		Spinner spinnerType = null;
 		View base = null;
+		Object item;
 		
 		AddRoomDialogWrapper(View base)
 		{
 			this.base = base;
 			spinnerType = (Spinner) base.findViewById(R.id.spnRoomType);
 		}
-		
-//		String getName()
-//		{
-//			return (getSpinnerText().getText().toString());
-//		}
-//		
+
 		private Spinner getSpinner()
 		{
 			if (spinnerType == null)
@@ -583,6 +609,11 @@ public class PropDetailActivity extends Activity implements LocationListener
 			}
 			
 			return (spinnerType);
+		}
+		
+		public Object getSelectedItem()
+		{
+			return item;
 		}
 	}
 	
