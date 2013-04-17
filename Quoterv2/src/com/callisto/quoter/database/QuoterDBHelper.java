@@ -1,5 +1,7 @@
 package com.callisto.quoter.database;
 
+import java.util.ArrayList;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -203,7 +205,10 @@ public class QuoterDBHelper extends SQLiteOpenHelper
 		{
 		case 4:
 			cursor = db.rawQuery(TableProperties.DATABASE_MAX_ID, null);
-		
+			
+		case 15:
+			cursor = db.rawQuery(TableRooms.DATABASE_MAX_ID, null);
+
 		default:
 			id = -1;
 		}
@@ -216,5 +221,48 @@ public class QuoterDBHelper extends SQLiteOpenHelper
 	        } while(cursor.moveToNext());           
 	    }
 	    return id;
+	}
+	
+	public ArrayList<Long> getIDs(int TableID)
+	{		
+		SQLiteDatabase db = getWritableDatabase();
+		
+		Cursor cursor = null;
+
+		ArrayList<Long> ids = new ArrayList<Long>();
+		
+		switch(TableID)
+		{
+		case 4:
+			cursor = db.rawQuery(TableProperties.DATABASE_SELECT, null);
+			
+			while (cursor.moveToNext())
+			{
+				ids.add(cursor.getLong(cursor.getColumnIndex(TableProperties.COLUMN_ID_PROPERTY)));
+			}
+			
+			return ids;
+		case 15:
+			cursor = db.rawQuery(TableRooms.DATABASE_SELECT, null);
+			
+			while (cursor.moveToNext())
+			{
+				ids.add(cursor.getLong(cursor.getColumnIndex(TableRooms.COLUMN_ID_ROOM)));
+			}
+			
+			return ids;
+
+		default:
+			return ids;
+		}
+	}
+	
+	public int getRoomCountForProp(int propId, SQLiteDatabase db)
+	{
+		Cursor c = 
+				db.rawQuery("SELECT COUNT(*) FROM " + TablePropRooms.TABLE_PROPERTY_ROOMS 
+				+ " WHERE " + TableProperties.COLUMN_ID_PROPERTY + " = " + propId + ";", null);
+		
+		return c.getCount();
 	}
 }

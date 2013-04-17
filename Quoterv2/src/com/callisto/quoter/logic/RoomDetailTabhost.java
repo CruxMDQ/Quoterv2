@@ -37,7 +37,9 @@ public class RoomDetailTabhost extends TabActivity
 
 	private int z = 0;
 
-	private long daPropId, daRoomId;
+	private long 
+		daPropId, 
+		daRoomTypeId;
 	
 	private String daRoomType;
 	
@@ -64,6 +66,9 @@ public class RoomDetailTabhost extends TabActivity
 	    else 
 	    {
 	        daPropId = extras.getLong("propId");
+	        
+	        // TODO Code this on PropDetailActivity
+	        daRoomTypeId = extras.getLong("propTypeId");
 	        
 	        daRoomType = extras.getString("roomType");
 	    }
@@ -95,8 +100,6 @@ public class RoomDetailTabhost extends TabActivity
 		 * - Assign row id to daRoomId field
 		 * - Close database
 		 */
-		
-		
 	}
 	
 	private void doTabGubbinz()
@@ -256,25 +259,16 @@ public class RoomDetailTabhost extends TabActivity
 		daRoomTypesAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
 		daSpinnerRoomTypes.setAdapter(daRoomTypesAdapter);
-
-		// TODO Write this on thesis report. This approach doesn't work for displaying selected text from a spinner on the tab name: 
-		// http://stackoverflow.com/questions/8938847/android-transform-each-column-of-a-cursor-into-a-string-array
-		
-//		ArrayList<String> columnOne = new ArrayList<String>();
-//		
-//		Cursor DAOCursor = DAO.getCursor(TABLE_ROOMTYPES);
-//		
-//		for (DAOCursor.moveToFirst(); DAOCursor.moveToLast(); DAOCursor.isAfterLast())
-//		{
-//			columnOne.add(DAOCursor.getString(1));
-//		}
-//		
-//		ArrayAdapter<String> tryOne = new ArrayAdapter<String>(this, 
-//				android.R.layout.simple_spinner_item, 
-//				columnOne);
-//				
-//		tryOne.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//		
-//		daSpinnerRoomTypes.setAdapter(tryOne);
+	}
+	
+	private void getRoomsOnProperty(int propId)
+	{
+		/***
+		 * PSEUDOCODE
+		 * 
+		 * - Declare an array to store room identifiers
+		 * - Run query on DB
+		 * - 
+		 */
 	}
 }

@@ -1,7 +1,5 @@
 package com.callisto.quoter.logic;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
@@ -26,8 +24,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -42,7 +38,6 @@ import com.callisto.quoter.database.QuoterDBHelper;
 import com.callisto.quoter.database.TablePropTypes;
 import com.callisto.quoter.database.TableRoomTypes;
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.LatLng;
@@ -102,7 +97,6 @@ public class PropDetailActivity extends Activity implements LocationListener
 			public void onClick(View v)
 			{
 				addRoom();
-				//startRoomsActivity();
 			}
 		});
 		
@@ -317,41 +311,6 @@ public class PropDetailActivity extends Activity implements LocationListener
 				Toast.LENGTH_SHORT).show();
 	}	
 
-	/**
-	 * Research log:
-	 * - stackoverflow.com/questions/14659705/android-maps-api-v2-in-dialog [not working: map object not instantiated]
-	 * - stackoverflow.com/questions/13733299/initialize-mapfragment-programmatically-with-maps-api-v2
-	 * 
-	 */
-	private void openGps()
-	{
-		LayoutInflater inflater = LayoutInflater.from(this);
-
-		LatLng here = new LatLng(daCurrentLat, daCurrentLong);
-
-		MapFragment fragment = PreparedMapFragment.newInstance(here);
-		
-		FragmentTransaction transaction = getFragmentManager().beginTransaction();
-		
-		transaction.add(R.id.mapView, fragment)
-			.commit();
-		
-		//daMap = fragment.getMap();
-
-		View gps = inflater.inflate(R.layout.location_gps, null);
-		
-		new AlertDialog.Builder(this)
-			.setTitle("Property location")
-			.setView(gps)
-			.show();
-
-//		Marker currentLoc = daMap.addMarker(new MarkerOptions().position(here).title("Ubicación actual"));
-//		
-//		daMap.moveCamera(CameraUpdateFactory.newLatLngZoom(here, 15));
-//		
-//		daMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
-	}
-	
 	private void addPropType()
 	{
 		LayoutInflater inflater = LayoutInflater.from(this);
@@ -440,6 +399,40 @@ public class PropDetailActivity extends Activity implements LocationListener
 			).show();			
 	}
 	
+	/**
+		 * Research log:
+		 * - stackoverflow.com/questions/14659705/android-maps-api-v2-in-dialog [not working: map object not instantiated]
+		 * - stackoverflow.com/questions/13733299/initialize-mapfragment-programmatically-with-maps-api-v2
+		 */
+		private void openGps()
+		{
+			LayoutInflater inflater = LayoutInflater.from(this);
+	
+			LatLng here = new LatLng(daCurrentLat, daCurrentLong);
+	
+			MapFragment fragment = PreparedMapFragment.newInstance(here);
+			
+			FragmentTransaction transaction = getFragmentManager().beginTransaction();
+			
+			transaction.add(R.id.mapView, fragment)
+				.commit();
+			
+			//daMap = fragment.getMap();
+	
+			View gps = inflater.inflate(R.layout.location_gps, null);
+			
+			new AlertDialog.Builder(this)
+				.setTitle("Property location")
+				.setView(gps)
+				.show();
+	
+	//		Marker currentLoc = daMap.addMarker(new MarkerOptions().position(here).title("Ubicación actual"));
+	//		
+	//		daMap.moveCamera(CameraUpdateFactory.newLatLngZoom(here, 15));
+	//		
+	//		daMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+		}
+
 	private void processAddPropType(AddPropTypeDialogWrapper wrapper) 
 	{
 	    ContentValues values = new ContentValues();
@@ -525,7 +518,7 @@ public class PropDetailActivity extends Activity implements LocationListener
 		intent.putExtra("roomType", roomType);
 
 		startActivity(intent);
-	}
+	}	
 	
 	public void pickContact(View v)
 	{

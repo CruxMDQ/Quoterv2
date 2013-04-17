@@ -35,6 +35,9 @@ public class TableRooms
 			+ COLUMN_PICTURE 
 			+ " FROM " + TABLE_ROOMS + ";";
 
+	public static final String DATABASE_MAX_ID = 
+			"SELECT MAX" + "(" + COLUMN_ID_ROOM + ")" + " AS max_id FROM " + TABLE_ROOMS;
+
 	public static void onCreate(SQLiteDatabase db)
 	{
 		db.execSQL(DATABASE_CREATE);

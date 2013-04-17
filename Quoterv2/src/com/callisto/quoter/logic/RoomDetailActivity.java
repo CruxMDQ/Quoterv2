@@ -63,9 +63,12 @@ public class RoomDetailActivity extends Activity
 		PICK_IMAGE = 0,
 		ADD_ID = Menu.FIRST + 1,
 		DELETE_ID = Menu.FIRST + 3;					
-//		ADD_TAB = Menu.FIRST + 11;
 
-	private long daPropId, daRoomId = -1;
+	private long 
+		daPropId, 
+		daRoomTypeId = -1, 
+		daRoomId = -1;
+
 	private String initialRoomType;
 
 	@Override
@@ -297,31 +300,13 @@ public class RoomDetailActivity extends Activity
 	
 	private void saveStuff()
 	{
-		/*** TODO Get this stuff done!
-		 * PSEUDOCODE
-		 * 
-		 * - Get writable database
-		 * - Prepare content values
-		 * - Write stuff to rooms table (retrieves daRoomId)
-		 * - Assign row id to daRoomId field
-		 * - Write stuff to rooms<->properties table
-		 * - Close database
-		 * 
-		 * Column list:
-		 * 		COLUMN_ID_ROOM = "_id_room",
-				COLUMN_ROOM_WIDTH_X = "width_x",
-				COLUMN_ROOM_WIDTH_Y = "width_y",
-				COLUMN_FLOORS = "pisos",
-				COLUMN_DETAILS = "detalles",
-				COLUMN_PICTURE = "Imagen",
-		 */
 		try
 		{
 			QuoterDBHelper DAO = new QuoterDBHelper(getApplicationContext());
 	
 			ContentValues roomDetails = new ContentValues();
 			
-			/*** TODO Log detail about casting from string to float found at: 
+			/*** TODO Log research about casting from string to float found at: 
 			 * stackoverflow.com/questions/4229710/string-from-edittext-to-float
 			 */
 			String s1 = daTxtWidthX.getText().toString();
