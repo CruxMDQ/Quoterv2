@@ -24,6 +24,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -69,7 +71,7 @@ public class PropDetailActivity extends Activity implements LocationListener
 	private SimpleCursorAdapter daPropTypesAdapter, 
 		daRoomTypesAdapter;
 
-	long daPropId;
+	long daPropId, daRoomTypeId;
 
 	// "We be needing 'em fer da map to do its job, boss."
 	private LocationManager daLocationManager;
@@ -128,6 +130,26 @@ public class PropDetailActivity extends Activity implements LocationListener
 			{
 				openGps();
 			}
+		});
+
+		/*** TODO Log this: source for retrieval of row id:
+		 * http://stackoverflow.com/questions/11037256/get-the-row-id-of-an-spinner-item-populated-from-database
+		 */ 
+		daSpinnerRoomTypes.setOnItemSelectedListener(new OnItemSelectedListener()
+		{
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int pos, long id)
+			{
+				daRoomTypeId = id;
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+				
+			}
+			
 		});
 		
 		populatePropTypes();
@@ -351,24 +373,6 @@ public class PropDetailActivity extends Activity implements LocationListener
 		
 		daSpinnerRoomTypes = wrapper.getSpinner();
 		
-//		daSpinnerRoomTypes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-//		{
-//			@Override
-//			public void onItemSelected(AdapterView<?> parent, View view,
-//					int pos, long id)
-//			{
-//				daSpinnerSelekshun = parent.getItemAtPosition(pos);
-//				
-//				System.out.println(daSpinnerSelekshun.toString());
-//			}
-//
-//			@Override
-//			public void onNothingSelected(AdapterView<?> arg0)
-//			{
-//				// "Nothing 'appens 'ere, boss."
-//			}
-//		});
-		
 		populateRoomTypes();
 		
 		new AlertDialog.Builder(this)
@@ -383,9 +387,13 @@ public class PropDetailActivity extends Activity implements LocationListener
 						// TODO Figure how to get text from a spinner linked to a database via an Adapter (note link to solution when done)
 						// COMPLETED: http://stackoverflow.com/questions/5787809/get-spinner-selected-items-text
 						
+						// TODO How to get the ID of a table row based on the text displayed on a spinner
+						
 						TextView t = (TextView) daSpinnerRoomTypes.getSelectedView();
 						
-						startRoomsActivity(daPropId, t.getText().toString());
+						startRoomsActivity(daPropId, daRoomTypeId, t.getText().toString());
+						
+//						startRoomsActivity(daPropId, t.getText().toString());
 					}
 				})
 			.setNegativeButton(R.string.cancel,
@@ -518,7 +526,28 @@ public class PropDetailActivity extends Activity implements LocationListener
 		intent.putExtra("roomType", roomType);
 
 		startActivity(intent);
-	}	
+	}
+	
+	/***
+	 * Starts room tab host activity. All parameters are bundled as extras with the same name.
+	 * @param propId ID of the property being quoted
+	 * @param roomTypeId First room type ID
+	 * @param roomType First room type name, used for titling the tab
+	 */
+	public void startRoomsActivity(long propId, long roomTypeId, String roomType)
+	{
+		Intent intent = new Intent();
+		
+		intent.setClass(this, RoomDetailTabhost.class);
+		
+		intent.putExtra("propId", daPropId);
+		
+		intent.putExtra("roomTypeId", roomTypeId);
+		
+		intent.putExtra("roomType", roomType);
+
+		startActivity(intent);
+	}
 	
 	public void pickContact(View v)
 	{

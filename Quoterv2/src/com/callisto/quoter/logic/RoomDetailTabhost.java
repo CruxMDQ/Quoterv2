@@ -68,7 +68,7 @@ public class RoomDetailTabhost extends TabActivity
 	        daPropId = extras.getLong("propId");
 	        
 	        // TODO Code this on PropDetailActivity
-	        daRoomTypeId = extras.getLong("propTypeId");
+	        daRoomTypeId = extras.getLong("roomTypeId");
 	        
 	        daRoomType = extras.getString("roomType");
 	    }
@@ -76,6 +76,8 @@ public class RoomDetailTabhost extends TabActivity
 		Intent newTab = new Intent();
 
 		newTab.putExtra("propId", this.daPropId);
+		
+		//newTab.putExtra("roomTypeId", daRoomTypeId);
 		
 		newTab.setClass(this, RoomDetailActivity.class);
 		
@@ -263,6 +265,7 @@ public class RoomDetailTabhost extends TabActivity
 	
 	private void getRoomsOnProperty(int propId)
 	{
+		
 		/***
 		 * PSEUDOCODE
 		 * 

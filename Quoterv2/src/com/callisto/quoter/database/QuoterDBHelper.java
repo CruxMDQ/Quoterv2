@@ -257,8 +257,10 @@ public class QuoterDBHelper extends SQLiteOpenHelper
 		}
 	}
 	
-	public int getRoomCountForProp(int propId, SQLiteDatabase db)
+	public int getRoomCountForProp(int propId)
 	{
+		SQLiteDatabase db = getWritableDatabase();
+		
 		Cursor c = 
 				db.rawQuery("SELECT COUNT(*) FROM " + TablePropRooms.TABLE_PROPERTY_ROOMS 
 				+ " WHERE " + TableProperties.COLUMN_ID_PROPERTY + " = " + propId + ";", null);
