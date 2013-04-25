@@ -79,6 +79,8 @@ public class PropDetailActivity extends Activity implements LocationListener
 	private double daCurrentLat, daCurrentLong;
 //	private GoogleMap daMap;
 	
+	AdapterView.OnItemSelectedListener spinnerListener;
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{	
@@ -132,10 +134,11 @@ public class PropDetailActivity extends Activity implements LocationListener
 			}
 		});
 
+
 		/*** TODO Log this: source for retrieval of row id:
 		 * http://stackoverflow.com/questions/11037256/get-the-row-id-of-an-spinner-item-populated-from-database
 		 */ 
-		daSpinnerRoomTypes.setOnItemSelectedListener(new OnItemSelectedListener()
+		spinnerListener = new OnItemSelectedListener()
 		{
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view,
@@ -143,14 +146,32 @@ public class PropDetailActivity extends Activity implements LocationListener
 			{
 				daRoomTypeId = id;
 			}
-
+	
 			@Override
 			public void onNothingSelected(AdapterView<?> parent)
 			{
 				
 			}
-			
-		});
+		};
+
+//		/*** TODO Log this: source for retrieval of row id:
+//		 * http://stackoverflow.com/questions/11037256/get-the-row-id-of-an-spinner-item-populated-from-database
+//		 */ 
+//		daSpinnerRoomTypes.setOnItemSelectedListener(new OnItemSelectedListener()
+//		{
+//			@Override
+//			public void onItemSelected(AdapterView<?> parent, View view,
+//					int pos, long id)
+//			{
+//				daRoomTypeId = id;
+//			}
+//
+//			@Override
+//			public void onNothingSelected(AdapterView<?> parent)
+//			{
+//				
+//			}
+//		});
 		
 		populatePropTypes();
 		
@@ -373,6 +394,8 @@ public class PropDetailActivity extends Activity implements LocationListener
 		
 		daSpinnerRoomTypes = wrapper.getSpinner();
 		
+		daSpinnerRoomTypes.setOnItemSelectedListener(spinnerListener);
+		
 		populateRoomTypes();
 		
 		new AlertDialog.Builder(this)
@@ -408,38 +431,38 @@ public class PropDetailActivity extends Activity implements LocationListener
 	}
 	
 	/**
-		 * Research log:
-		 * - stackoverflow.com/questions/14659705/android-maps-api-v2-in-dialog [not working: map object not instantiated]
-		 * - stackoverflow.com/questions/13733299/initialize-mapfragment-programmatically-with-maps-api-v2
-		 */
-		private void openGps()
-		{
-			LayoutInflater inflater = LayoutInflater.from(this);
-	
-			LatLng here = new LatLng(daCurrentLat, daCurrentLong);
-	
-			MapFragment fragment = PreparedMapFragment.newInstance(here);
-			
-			FragmentTransaction transaction = getFragmentManager().beginTransaction();
-			
-			transaction.add(R.id.mapView, fragment)
-				.commit();
-			
-			//daMap = fragment.getMap();
-	
-			View gps = inflater.inflate(R.layout.location_gps, null);
-			
-			new AlertDialog.Builder(this)
-				.setTitle("Property location")
-				.setView(gps)
-				.show();
-	
-	//		Marker currentLoc = daMap.addMarker(new MarkerOptions().position(here).title("Ubicación actual"));
-	//		
-	//		daMap.moveCamera(CameraUpdateFactory.newLatLngZoom(here, 15));
-	//		
-	//		daMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
-		}
+	 * Research log:
+	 * - stackoverflow.com/questions/14659705/android-maps-api-v2-in-dialog [not working: map object not instantiated]
+	 * - stackoverflow.com/questions/13733299/initialize-mapfragment-programmatically-with-maps-api-v2
+	 */
+	private void openGps()
+	{
+		LayoutInflater inflater = LayoutInflater.from(this);
+
+		LatLng here = new LatLng(daCurrentLat, daCurrentLong);
+
+		MapFragment fragment = PreparedMapFragment.newInstance(here);
+		
+		FragmentTransaction transaction = getFragmentManager().beginTransaction();
+		
+		transaction.add(R.id.mapView, fragment)
+			.commit();
+		
+		//daMap = fragment.getMap();
+
+		View gps = inflater.inflate(R.layout.location_gps, null);
+		
+		new AlertDialog.Builder(this)
+			.setTitle("Property location")
+			.setView(gps)
+			.show();
+
+//		Marker currentLoc = daMap.addMarker(new MarkerOptions().position(here).title("Ubicación actual"));
+//		
+//		daMap.moveCamera(CameraUpdateFactory.newLatLngZoom(here, 15));
+//		
+//		daMap.animateCamera(CameraUpdateFactory.zoomTo(15), 2000, null);
+	}
 
 	private void processAddPropType(AddPropTypeDialogWrapper wrapper) 
 	{
@@ -575,8 +598,16 @@ public class PropDetailActivity extends Activity implements LocationListener
 	    	System.out.println("Provider " + daProvider + " has been selected.");
 	    	onLocationChanged(location);
 	    } 
-		daCurrentLat = location.getLatitude();
-		daCurrentLong = location.getLongitude();
+	    
+	    try
+	    {
+			daCurrentLat = location.getLatitude();
+			daCurrentLong = location.getLongitude();
+	    }
+	    catch (Exception e)
+	    {
+//	    	System.out.println(e.getMessage());
+	    }
 	}
 	
 	public void viewContact(View v)

@@ -23,6 +23,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
@@ -31,38 +33,56 @@ import android.widget.Spinner;
 import com.callisto.quoter.R;
 import com.callisto.quoter.contentprovider.QuoterContentProvider;
 import com.callisto.quoter.database.QuoterDBHelper;
-import com.callisto.quoter.database.TablePropRooms;
 import com.callisto.quoter.database.TableProperties;
 import com.callisto.quoter.database.TableRoomTypes;
 import com.callisto.quoter.database.TableRooms;
 
+/***
+ * PSEUDOCODE: RETRIEVAL OF EXISTING DETAILS FROM DATABASE, IF THERE ARE ANY
+ * 
+ * 	Declare cursor object to store room details;
+ * 
+ * 	if roomId is not -1
+ * 	{
+ * 		cursor = query database for room details using roomId;
+ * 
+ * 		populate text fields;
+ * 
+ * 		if path to picture retrieved from database is not null
+ * 		{
+ * 			picture pic = get picture using path;
+ * 
+ * 			put picture on ImageView component;
+ *  	}	
+ * 	}
+ */
+
 public class RoomDetailActivity extends Activity
-	implements LoaderManager.LoaderCallbacks<Cursor>
+//	implements LoaderManager.LoaderCallbacks<Cursor>
 {
 	private static final int 
 		TABLE_PROP_ROOMS = 10,
 		TABLE_ROOMS = 15,
 		TABLE_ROOMTYPES = 16;
 	
-//	private TabHost tabHost = null;
-
-	private Spinner daSpinnerType;
+	// TODO Clean up the spinners, both here and on the UI files
+	private Spinner daSpinnerType, daDialogRoomTypeSpinner;
 	
 	private EditText daTxtWidthX, daTxtWidthY, daTxtFloors;
 	
-	// "Dis 'ere gubbinz are fer da kamera to do work propa."
+	/*** "Dis 'ere gubbinz are fer da kamera to do work propa."
+	 */
 	private ImageView daImageView;
 	private Uri daURI;
 	private String daPhotoPath;
-
-//	private Uri quoteUri;
 
 	private SimpleCursorAdapter daAdapter;
 
 	private static final int
 		PICK_IMAGE = 0,
 		ADD_ID = Menu.FIRST + 1,
-		DELETE_ID = Menu.FIRST + 3;					
+		DELETE_ID = Menu.FIRST + 3,
+		ADD_TAB = Menu.FIRST + 11;
 
 	private long 
 		daPropId, 
@@ -71,6 +91,8 @@ public class RoomDetailActivity extends Activity
 
 	private String initialRoomType;
 
+	OnItemSelectedListener spinnerListener;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
@@ -120,6 +142,43 @@ public class RoomDetailActivity extends Activity
 				startActivityForResult(camera, PICK_IMAGE);
 			}
 		});
+
+		/*** TODO Log this: source for retrieval of row id:
+		 * http://stackoverflow.com/questions/11037256/get-the-row-id-of-an-spinner-item-populated-from-database
+		 */ 
+		
+		spinnerListener = new OnItemSelectedListener()
+		{
+			@Override
+			public void onItemSelected(AdapterView<?> parent, View view,
+					int pos, long id)
+			{
+				daRoomTypeId = id;
+			}
+
+			@Override
+			public void onNothingSelected(AdapterView<?> parent)
+			{
+				
+			}
+		};
+		
+//		daDialogRoomTypeSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
+//		{
+//			@Override
+//			public void onItemSelected(AdapterView<?> parent, View view,
+//					int pos, long id)
+//			{
+//				daRoomTypeId = id;
+//			}
+//
+//			@Override
+//			public void onNothingSelected(AdapterView<?> parent)
+//			{
+//				
+//			}
+//			
+//		});
 	}
 
 	@Override
@@ -144,6 +203,9 @@ public class RoomDetailActivity extends Activity
 		case DELETE_ID:
 			deleteRoomType();
 			return (true);
+			
+		case ADD_TAB:
+			
 		}
 		
 		return (super.onOptionsItemSelected(item));
@@ -233,6 +295,48 @@ public class RoomDetailActivity extends Activity
 		super.onPause();
 
 		saveStuff();
+	}
+	
+	// TODO This is supposed to handle passage of room type id back to the parent RoomDetailTabhost class. Find out how.
+	private void addRoom()
+	{
+		LayoutInflater inflater = LayoutInflater.from(this);
+		
+		View addView = inflater.inflate(R.layout.add_room, null);
+		
+		final AddRoomDialogWrapper wrapper = new AddRoomDialogWrapper(addView);
+		
+		daDialogRoomTypeSpinner = wrapper.getSpinner();
+		
+		daDialogRoomTypeSpinner.setOnItemSelectedListener(spinnerListener);
+		
+		populateRoomTypes();
+		
+		new AlertDialog.Builder(this)
+			.setTitle("Select initial room")
+			.setView(addView)
+			.setPositiveButton(R.string.ok,
+				new DialogInterface.OnClickListener() 
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int which) 
+					{
+						/*** "Urrr... 'ow ta get dis 'ere klass 'daRoomTypeId' fing back to dat uvver TabHost klass?"
+						 * "Speculation: you need to find a way to send a message from a running activity to another running activity without ending it, meatbag."
+						 * "I HEARZ DAT!"
+						 */
+						
+					}
+				})
+			.setNegativeButton(R.string.cancel,
+				new DialogInterface.OnClickListener()
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+	
+					}
+				}
+			).show();			
 	}
 	
 	private void addRoomType()
@@ -327,6 +431,7 @@ public class RoomDetailActivity extends Activity
 			roomDetails.put(TableRooms.COLUMN_FLOORS, daTxtFloors.getText().toString());
 			roomDetails.put(TableRooms.COLUMN_DETAILS, "TEST");
 			roomDetails.put(TableRooms.COLUMN_PICTURE, daPhotoPath);
+			roomDetails.put(TableRoomTypes.COLUMN_ID_ROOM_TYPE, daRoomTypeId);
 		
 			if (daRoomId == -1)
 			{
@@ -351,31 +456,31 @@ public class RoomDetailActivity extends Activity
 		}
 	}
 
-	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle args)
-	{
-		String[] projection = { TableRoomTypes.COLUMN_ID_ROOM_TYPE, TableRoomTypes.COLUMN_NAME };
-		
-		CursorLoader cursorLoader = new CursorLoader (this,
-				QuoterContentProvider.CONTENT_URI_ROOM_TYPES, projection, null, null, null);
-		
-		return cursorLoader;
-	}
-	
-	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor data)
-	{
-		MaskingWrapper mask = new MaskingWrapper(data);
-		
-		daAdapter.swapCursor(mask);
-	}
-	
-	@Override
-	public void onLoaderReset(Loader<Cursor> loader)
-	{
-		// Data not available anymore -> delete reference
-		daAdapter.swapCursor(null);
-	}
+//	@Override
+//	public Loader<Cursor> onCreateLoader(int id, Bundle args)
+//	{
+//		String[] projection = { TableRoomTypes.COLUMN_ID_ROOM_TYPE, TableRoomTypes.COLUMN_NAME };
+//		
+//		CursorLoader cursorLoader = new CursorLoader (this,
+//				QuoterContentProvider.CONTENT_URI_ROOM_TYPES, projection, null, null, null);
+//		
+//		return cursorLoader;
+//	}
+//	
+//	@Override
+//	public void onLoadFinished(Loader<Cursor> loader, Cursor data)
+//	{
+//		MaskingWrapper mask = new MaskingWrapper(data);
+//		
+//		daAdapter.swapCursor(mask);
+//	}
+//	
+//	@Override
+//	public void onLoaderReset(Loader<Cursor> loader)
+//	{
+//		// Data not available anymore -> delete reference
+//		daAdapter.swapCursor(null);
+//	}
 
 	class AddRoomTypeDialogWrapper
 	{

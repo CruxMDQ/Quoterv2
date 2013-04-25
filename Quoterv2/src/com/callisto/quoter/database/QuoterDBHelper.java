@@ -38,6 +38,7 @@ public class QuoterDBHelper extends SQLiteOpenHelper
 		TablePropLogistics.onCreate(db);
 		TablePropMats.onCreate(db);
 		TablePropNom.onCreate(db);
+		TablePropRooms.onCreate(db);
 		TablePropSurfaces.onCreate(db);
 		TablePropTaxes.onCreate(db);
 		TablePropTypes.onCreate(db);
@@ -266,5 +267,49 @@ public class QuoterDBHelper extends SQLiteOpenHelper
 				+ " WHERE " + TableProperties.COLUMN_ID_PROPERTY + " = " + propId + ";", null);
 		
 		return c.getCount();
+	}
+
+	/***
+	 * This will be used by the room tabhost to get the rooms belonging to a given property.
+	 * @param propId The ID of the property being queried.
+	 * @return Contents of rooms table on database.
+	 * Know-how source: http://rosettacode.org/wiki/Parametrized_SQL_statement
+	 * DEPRECATION WARNING: actual room details must be retrieved from the room detail activity, *NOT* from the room tabhost.
+	 */
+//	public Cursor getRoomsForProperty(int propId)
+//	{
+//		SQLiteDatabase db = getWritableDatabase();
+//		
+//		return db.rawQuery("SELECT " +
+//				"A._id_room AS _id, " +
+//				"A._id_room_type, " +
+//				"A.width_x, " +
+//				"A.width_y, " +
+//				"A.pisos, " +
+//				"A.detalles,  " +
+//				"A.imagen" +
+//				"FROM " + TableRooms.TABLE_ROOMS + " AS A, " + TablePropRooms.TABLE_PROPERTY_ROOMS + " AS P " +
+//				"WHERE P._id_prop = + " + Integer.toString(propId) + ";", null);
+//	}
+	
+	/***
+	 * Retrieves info about a specific room. Used by room detail activity.
+	 * @param roomId Identifier of the room to look up.
+	 * @return A cursor object containing a single row.
+	 */
+	public Cursor getRoom(int roomId)
+	{
+		SQLiteDatabase db = getWritableDatabase();
+		
+		return db.rawQuery("SELECT " +
+				"A._id_room AS _id, " +
+				"A._id_room_type, " +
+				"A.width_x, " +
+				"A.width_y, " +
+				"A.pisos, " +
+				"A.detalles,  " +
+				"A.imagen" +
+				"FROM " + TableRooms.TABLE_ROOMS + " AS A " +
+				"WHERE A._id_room = + " + Integer.toString(roomId) + ";", null);
 	}
 }
