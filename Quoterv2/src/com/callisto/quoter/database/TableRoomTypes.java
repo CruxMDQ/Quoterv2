@@ -24,30 +24,38 @@ public class TableRoomTypes
 	
 	public static void onCreate(SQLiteDatabase db)
 	{		
-		db.execSQL(DATABASE_CREATE);
-
-		if (db.rawQuery("SELECT * FROM " + TABLE_ROOMTYPES + " WHERE " + COLUMN_NAME + " = 'Bedroom';", null).getCount() == 0)
+		try
 		{
-			insert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Bedroom");
-			
+			db.execSQL(DATABASE_CREATE);
+
+			if (db.rawQuery("SELECT * FROM " + TABLE_ROOMTYPES + " WHERE " + COLUMN_NAME + " = 'Bedroom';", null).getCount() == 0)
+			{
+				insert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Bedroom");
+				
 //			cv.put(COLUMN_NAME, "Bedroom");
 //			db.insert(TABLE_ROOMTYPES, COLUMN_NAME, cv);
-			  
-			insert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Bathroom");
+				  
+				insert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Bathroom");
 
 //			cv.put(COLUMN_NAME, "Bathroom");
 //			db.insert(TABLE_ROOMTYPES, COLUMN_NAME, cv);
-			  
-			insert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Kitchen");
+				  
+				insert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Kitchen");
 
 //			cv.put(COLUMN_NAME, "Kitchen");
 //			db.insert(TABLE_ROOMTYPES, COLUMN_NAME, cv);
-			  
-			insert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Living room");
-			
+				  
+				insert(db, TABLE_ROOMTYPES, COLUMN_NAME, "Living room");
+				
 //			cv.put(COLUMN_NAME, "Living room");
 //			db.insert(TABLE_ROOMTYPES, COLUMN_NAME, cv);
-	    }
+			}
+		} 
+		catch (SQLException e)
+		{
+			System.out.println("Exception on table creation step: " + TABLE_ROOMTYPES);
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	public static void insert(SQLiteDatabase db, String table, String col, String value)

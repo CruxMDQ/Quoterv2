@@ -1,5 +1,6 @@
 package com.callisto.quoter.database;
 
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -31,7 +32,14 @@ public class TablePropSurfaces
 
 	public static void onCreate(SQLiteDatabase db)
 	{
-		db.execSQL(DATABASE_CREATE);
+		try
+		{
+			db.execSQL(DATABASE_CREATE);
+		} catch (SQLException e)
+		{
+			System.out.println("Exception on table creation step: " + TABLE_PROPERTY_SURFACES);
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)

@@ -21,7 +21,15 @@ public class TableExpenses
 	
 	public static void onCreate(SQLiteDatabase db)
 	{
-		db.execSQL(DATABASE_CREATE);
+		try
+		{
+			db.execSQL(DATABASE_CREATE);
+		}
+		catch (Exception e)
+		{
+			System.out.println("Exception on table creation step: " + TABLE_EXPENSES);
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	public static void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)

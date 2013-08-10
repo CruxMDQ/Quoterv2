@@ -25,6 +25,7 @@ public class QuoterDBHelper extends SQLiteOpenHelper
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
+	// "Memo t' self: mind dat zoggin' kreayshun order!"
 	@Override
 	public void onCreate(SQLiteDatabase db)
 	{
@@ -33,18 +34,18 @@ public class QuoterDBHelper extends SQLiteOpenHelper
 		TableExpenses.onCreate(db);
 		TableNbh.onCreate(db);
 		TableProperties.onCreate(db);
+		TableRooms.onCreate(db);
+		TableRoomTypes.onCreate(db);
 		TablePropComforts.onCreate(db);
 		TablePropExpenses.onCreate(db);
 		TablePropLogistics.onCreate(db);
 		TablePropMats.onCreate(db);
 		TablePropNom.onCreate(db);
-		TablePropRooms.onCreate(db);
 		TablePropSurfaces.onCreate(db);
 		TablePropTaxes.onCreate(db);
 		TablePropTypes.onCreate(db);
 		TablePropValues.onCreate(db);
-		TableRooms.onCreate(db);
-		TableRoomTypes.onCreate(db);
+		TablePropRooms.onCreate(db);
 
 		db.execSQL(TRIGGER_PROPERTY_EXPENSES);
 	}
@@ -194,6 +195,82 @@ public class QuoterDBHelper extends SQLiteOpenHelper
 		}
 	}
 	
+	public long update(int tableId, ContentValues cv)
+	{
+		SQLiteDatabase db = getWritableDatabase();
+		
+		switch(tableId)
+		{
+		case 0:
+			return db.update(TableCities.TABLE_CITIES, cv, null, null);
+			
+		case 1:
+			return db.update(TableComforts.TABLE_COMFORTS, cv, null, null);
+
+		case 2:
+			return db.update(TableExpenses.TABLE_EXPENSES, cv, null, null);
+		
+		case 3:
+			return db.update(TableNbh.TABLE_NBH, cv, null, null);
+
+		case 4:
+			return db.update(TableProperties.TABLE_PROPERTIES, cv, null, null);
+			
+		case 5:
+			return db.update(TablePropComforts.TABLE_PROPERTY_COMFORTS, cv, null, null);
+			
+		case 6:
+			return db.update(TablePropExpenses.TABLE_PROPERTY_EXPENSES, cv, null, null);
+
+		case 7:
+			return db.update(TablePropLogistics.TABLE_PROPERTY_LOGISTICS, cv, null, null);
+			
+		case 8:
+			return db.update(TablePropMats.TABLE_PROPERTY_MATERIALS, cv, null, null);
+			
+		case 9:
+			return db.update(TablePropNom.TABLE_PROPERTY_NOMENCLATURES, cv, null, null);
+		
+		case 10:
+		    return db.update(TablePropRooms.TABLE_PROPERTY_ROOMS, cv, null, null);
+			
+		case 11:
+			return db.update(TablePropSurfaces.TABLE_PROPERTY_SURFACES, cv, null, null);
+		
+		case 12:
+			return db.update(TablePropTaxes.TABLE_PROPERTY_TAXES, cv, null, null);
+			
+		case 13:
+			return db.update(TablePropTypes.TABLE_PROPERTY_TYPES, cv, null, null);
+			
+		case 14:
+			return db.update(TablePropValues.TABLE_PROPERTY_VALUES, cv, null, null);
+			
+		case 15:
+			Cursor T = db.rawQuery("SELECT * FROM " + TableRooms.TABLE_ROOMS, null);
+			
+			while (T.moveToNext())
+			{
+				System.out.println(T.getInt(0));
+			}
+			
+			T.close();
+			
+		    return db.update(TableRooms.TABLE_ROOMS,
+		    		cv, 
+		    		TableRooms.COLUMN_ID_ROOM + " = ?",
+		            new String[] { String.valueOf(cv.getAsInteger(TableRooms.COLUMN_ID_ROOM)) });
+		    
+			//return db.update(TableRooms.TABLE_ROOMS, cv, null, null);
+			
+		case 16:
+			return db.update(TableRoomTypes.TABLE_ROOMTYPES, cv, null, null);
+			
+		default:
+			return -1;
+		}
+	}
+	
 	public long getMaxId(int TableID)
 	{
 	    long id = 0;     
@@ -221,6 +298,9 @@ public class QuoterDBHelper extends SQLiteOpenHelper
 	            id = cursor.getLong(0);                  
 	        } while(cursor.moveToNext());           
 	    }
+	    
+	    cursor.close();
+	    
 	    return id;
 	}
 	

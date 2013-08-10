@@ -4,14 +4,12 @@ import java.io.File;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.LoaderManager;
 import android.content.ContentValues;
-import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.Loader;
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.database.SQLException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -117,7 +115,7 @@ public class RoomDetailActivity extends Activity
 		daTxtWidthX = (EditText) findViewById(R.id.txtWidthX);
 		daTxtWidthY = (EditText) findViewById(R.id.txtWidthY);
 		daTxtFloors = (EditText) findViewById(R.id.txtFloors);
-		
+
 		populateRoomTypes();
 		
 		daImageView = (ImageView) findViewById(R.id.imgDisplayImage);
@@ -250,6 +248,7 @@ public class RoomDetailActivity extends Activity
 					}
 					else
 					{
+						System.out.println("Room detail activity warning: ");
 						System.out.println("Intent bundle does not have the 'data' Extra");
 						
 						int width = daImageView.getWidth();
@@ -280,6 +279,10 @@ public class RoomDetailActivity extends Activity
 						
 						daImageView.setImageBitmap(bitmap);
 					}
+				}
+				if (!cursor.isClosed())
+				{
+					cursor.close();
 				}
 			}
 		}
@@ -404,55 +407,78 @@ public class RoomDetailActivity extends Activity
 	
 	private void saveStuff()
 	{
-		try
+		QuoterDBHelper DAO = new QuoterDBHelper(getApplicationContext());
+
+		ContentValues roomDetails = new ContentValues();
+		
+		/*** TODO Log research about casting from string to float found at: 
+		 * stackoverflow.com/questions/4229710/string-from-edittext-to-float
+		 */
+		String s1 = daTxtWidthX.getText().toString();
+		String s2 = daTxtWidthY.getText().toString();
+		
+		if (/*daTxtWidthX.getText().toString()*/ !s1.equals(""))
 		{
-			QuoterDBHelper DAO = new QuoterDBHelper(getApplicationContext());
-	
-			ContentValues roomDetails = new ContentValues();
-			
-			/*** TODO Log research about casting from string to float found at: 
-			 * stackoverflow.com/questions/4229710/string-from-edittext-to-float
-			 */
-			String s1 = daTxtWidthX.getText().toString();
-			String s2 = daTxtWidthY.getText().toString();
-			
-			if (/*daTxtWidthX.getText().toString()*/ !s1.equals(""))
-			{
-				roomDetails.put(TableRooms.COLUMN_ROOM_WIDTH_X, Float.valueOf(daTxtWidthX.getText().toString()));
-			}
-			
-			if (/*daTxtWidthY.getText().toString()*/ !s2.equals(""))
-			{
-				roomDetails.put(TableRooms.COLUMN_ROOM_WIDTH_Y, Float.valueOf(daTxtWidthY.getText().toString()));
-			}
-			
+			roomDetails.put(TableRooms.COLUMN_ROOM_WIDTH_X, Float.valueOf(daTxtWidthX.getText().toString()));
+		}
+		
+		if (/*daTxtWidthY.getText().toString()*/ !s2.equals(""))
+		{
+			roomDetails.put(TableRooms.COLUMN_ROOM_WIDTH_Y, Float.valueOf(daTxtWidthY.getText().toString()));
+		}
+		
 //			roomDetails.put("COLUMN_ROOM_WIDTH_X", Float.valueOf(daTxtWidthX.getText().toString()));
 //			roomDetails.put("COLUMN_ROOM_WIDTH_Y", Float.valueOf(daTxtWidthY.getText().toString()));
-			roomDetails.put(TableRooms.COLUMN_FLOORS, daTxtFloors.getText().toString());
-			roomDetails.put(TableRooms.COLUMN_DETAILS, "TEST");
-			roomDetails.put(TableRooms.COLUMN_PICTURE, daPhotoPath);
-			roomDetails.put(TableRoomTypes.COLUMN_ID_ROOM_TYPE, daRoomTypeId);
+		roomDetails.put(TableRooms.COLUMN_FLOORS, daTxtFloors.getText().toString());
+		roomDetails.put(TableRooms.COLUMN_DETAILS, "TEST");
+		roomDetails.put(TableRooms.COLUMN_PICTURE, daPhotoPath);
+//			roomDetails.put(TableRooms.COLUMN_ID_ROOM, daRoomId);
+		roomDetails.put(TableRoomTypes.COLUMN_ID_ROOM_TYPE, daRoomTypeId);
+	
+		System.out.println("Room ID: " + daRoomId);
 		
-			if (daRoomId == -1)
+		if (daRoomId == -1)
+		{
+			try
 			{
+				System.out.println("Performing room insertion");
 				daRoomId = DAO.insert(TABLE_ROOMS, roomDetails);
 			}
-			else
+			catch(SQLException S)
 			{
-				DAO.insert(TABLE_ROOMS, roomDetails);
+				System.out.println("Exception on insert on TABLE_ROOMS step");
+				System.out.println(S.getMessage());
 			}
-				
-			ContentValues propRooms = new ContentValues();
+		}
+		else
+		{
+			try
+			{
+				System.out.println("Updating existing room");
+				roomDetails.put(TableRooms.COLUMN_ID_ROOM, daRoomId);
+
+				DAO.update(TABLE_ROOMS, roomDetails);
+			}
+			catch(SQLException S)
+			{
+				System.out.println("Exception on update on TABLE_ROOMS step");
+				System.out.println(S.getMessage());
+			}
+		}
 			
-			propRooms.put(TableProperties.COLUMN_ID_PROPERTY, daPropId);
-			propRooms.put(TableRooms.COLUMN_ID_ROOM, daRoomId);
-			
+		ContentValues propRooms = new ContentValues();
+		
+		propRooms.put(TableProperties.COLUMN_ID_PROPERTY, daPropId);
+		propRooms.put(TableRooms.COLUMN_ID_ROOM, daRoomId);
+		
+		try
+		{
 			DAO.insert(TABLE_PROP_ROOMS, propRooms);
 		}
-		catch(Exception e)
+		catch(SQLException S)
 		{
-			System.out.println("Exception on insert on TABLE_ROOMS step");
-			System.out.println(e.getMessage());
+			System.out.println("Exception on update on TABLE_PROP_ROOMS step");
+			System.out.println(S.getMessage());
 		}
 	}
 

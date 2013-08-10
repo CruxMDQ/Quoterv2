@@ -21,5 +21,6 @@
     <string name="values">Values...</string>
     <string name="logistics">Logistics...</string>
     <string name="materials">Materials...</string>
+    <string name="hint_dimension_room">Type number in meters</string>
     
 </resources>

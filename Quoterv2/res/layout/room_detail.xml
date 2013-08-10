@@ -65,28 +65,30 @@
 
 	            <EditText
 	                android:id="@+id/txtWidthX"
-	                android:inputType="numberDecimal"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:layout_alignBaseline="@+id/lblWidthX"
 	                android:layout_alignBottom="@+id/lblWidthX"
 	                android:layout_alignLeft="@+id/txtWidthY"
 	                android:layout_alignParentRight="true"
-	                android:ems="10" >
+	                android:ems="10"
+	                android:hint="@string/hint_dimension_room"
+	                android:inputType="numberDecimal" >
 
 	                <requestFocus />
 	            </EditText>
 
 	            <EditText
 	                android:id="@+id/txtWidthY"
-	                android:inputType="numberDecimal"
 	                android:layout_width="wrap_content"
 	                android:layout_height="wrap_content"
 	                android:layout_alignBaseline="@+id/lblWidthY"
 	                android:layout_alignBottom="@+id/lblWidthY"
 	                android:layout_alignParentRight="true"
 	                android:layout_toRightOf="@+id/lblWidthY"
-	                android:ems="10" />
+	                android:ems="10"
+	                android:hint="@string/hint_dimension_room"
+	                android:inputType="numberDecimal" />
 
 	            <TextView
 	                android:id="@+id/lblFloors"
